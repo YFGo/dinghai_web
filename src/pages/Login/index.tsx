@@ -172,7 +172,7 @@ const Login = () => {
     <Layout className="login-container">
       <Content className="login-content">
         <Card
-          title="定海网安平台"
+          title="定海网络安全平台"
           className="login-card"
           styles={{
             header: { border: 0 },
