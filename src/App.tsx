@@ -6,7 +6,7 @@ import { Provider } from 'react-redux';
 import router from "@/routes/index.tsx";
 import store from '@/redux/index.ts';
 import './App.scss'
-import 'reset-css'
+// import 'reset-css'
 
 const App = () => {
   return (

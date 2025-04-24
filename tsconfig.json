@@ -2,19 +2,21 @@
   "files": [],
   "references": [
     {
-      "path": "./tsconfig.app.json"
+      "path": "./tsconfig.app.json" // 前端应用配置
     },
     {
-      "path": "./tsconfig.node.json"
+      "path": "./tsconfig.node.json" // Node 脚本配置
     }
   ],
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
       "@/*": [
-        "src/*"
+        "src/*" // 全局路径别名（但子项目需显式继承）
       ]
     }
   },
-  
 }
+
+// 项目通过 多份 tsconfig.json 文件 
+// 实现了 配置分离，目的是针对不同场景（如前端代码和 Node 脚本）使用不同的 TypeScript 编译规则。

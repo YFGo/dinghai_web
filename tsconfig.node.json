@@ -1,9 +1,12 @@
 {
   "compilerOptions": {
+    "baseUrl": ".", // 继承根目录
+    "paths": { "@/*": ["src/*"] }, // 显式定义路径映射
+
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
-    "target": "ES2022",
-    "lib": ["ES2023"],
-    "module": "ESNext",
+    "target": "ES2022", // Node 支持更高版本 ES
+    "lib": ["ES2023"], // Node 环境类型（无 DOM）
+    "module": "ESNext", // Node 原生模块解析
     "skipLibCheck": true,
 
     /* Bundler mode */
@@ -20,5 +23,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["vite.config.ts"]
+  "include": ["vite.config.ts"] // 仅处理 Node 脚本（如构建配置）
 }

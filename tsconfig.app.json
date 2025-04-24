@@ -3,17 +3,20 @@
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     "target": "ES2020",
     "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "lib": ["ES2020", "DOM", "DOM.Iterable","ESNext"], // 包含浏览器环境类型（如 DOM API）
     "module": "ESNext",
     "skipLibCheck": true,
 
+    "baseUrl": ".", // 继承根目录
+    "paths": { "@/*": ["src/*"] }, // 显式定义路径映射
+
     /* Bundler mode */
-    "moduleResolution": "bundler",
+    "moduleResolution": "bundler", // 适配打包工具（如 Vite）
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "moduleDetection": "force",
     "noEmit": true,
-    "jsx": "react-jsx",
+    "jsx": "react-jsx", // 支持 React JSX
 
     /* Linting */
     "strict": true,
@@ -22,5 +25,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src"]
+  "include": ["src"] // 仅处理前端代码
 }

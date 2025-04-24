@@ -11,11 +11,11 @@ import axios, {
 
 // 创建实例时指定默认类型
 const request: AxiosInstance = axios.create({
-  baseURL: import.meta.env.REACT_APP_BASE_API,
   timeout: 10000,
   headers: new AxiosHeaders({
     'Content-Type': 'application/json'
-  })
+  }),
+  baseURL: import.meta.env.VITE_APP_BASE_API
 })
 
 // 增强类型声明
