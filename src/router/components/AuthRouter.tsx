@@ -2,7 +2,7 @@ import { message } from "antd";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { matchRoutes, useLocation, useNavigate } from "react-router-dom";
-import routers  from "./index";
+import routers  from "../index";
 
 const AuthRoute = ({ children, auth }: any) => {
   const navigate = useNavigate();
@@ -15,8 +15,7 @@ const AuthRoute = ({ children, auth }: any) => {
 
   useEffect(() => {
     if (token == "" && auth) {
-      message.error("token 过期，请重新登录!");
-      navigate("/login");
+      navigate('/403');
     }
     // 这里判断条件是：token 存在并且是匹配到路由并且是已经登录的状态
     if (token && isExist && loginState == "login") {

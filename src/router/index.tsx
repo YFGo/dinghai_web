@@ -1,7 +1,8 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
-import Login from '../pages/Login';
+import Login from '../pages/login';
 import AuthRoute from '@/components/AuthRoute';
-import Dashboard from '@/pages/Dashboard';
+import Dashboard from '@/pages/dashboard';
+import Page403 from '@/pages/error/Page403';
 
 // 后续会添加更多页面和布局
 const router = createBrowserRouter([
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
     element: (
         <Dashboard />
     )
+  },
+  {
+    path: '/403',
+    element: <Page403 />
   }
 ])
 

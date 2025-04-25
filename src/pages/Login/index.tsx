@@ -2,11 +2,11 @@ import { useState, useEffect } from 'react'
 import { Form, Input, Button, Tabs, Card, message, Layout } from 'antd'
 import { UserOutlined, LockOutlined, MobileOutlined } from '@ant-design/icons'
 import type { TabsProps } from 'antd'
-import { authApi } from '@/api/modules/user' // 导入封装好的接口
-import type { LoginParams } from '@/api/types/user' // 导入类型定义
+import { loginApi, refreshToken, getUserInfo } from '@/api/services/user' // 导入封装好的接口
 import './style.scss'
-import storageToken from '@/utils/storage.ts' // 导入存储Token的工具函数
+import { getToken, setToken } from '@/utils/storage.ts' // 导入存储Token的工具函数
 import { useNavigate } from 'react-router-dom'
+import type { LoginParams } from '@/api/services/user' // 导入类型定义
 
 const { Content } = Layout
 
@@ -39,16 +39,16 @@ const Login = () => {
         phone: isPasswordLogin ? (isEmail ? '' : values.username) : values.username, // 验证码登录强制使用手机号
 
         // 固定初始值
-        code: '',
+        code: !isPasswordLogin ? values.code :'',
         password: values.password
       }
 
       // 调用接口
-      const { data: tokens } = await authApi.login(params)
+      const { data: tokens } = await loginApi(params)
 
       // 存储Token
-      storageToken.set('accessToken', tokens.accessToken)
-      storageToken.set('refreshToken', tokens.accessToken)
+      setToken('AccessToken', tokens.accessToken)
+      setToken('RefreshToken', tokens.refreshToken)
 
       // 获取用户信息
       // const { data: userInfo } = await authApi.getUserInfo();
@@ -147,7 +147,7 @@ const Login = () => {
   ]
 
   useEffect(() => {
-    if (storageToken.get('accessToken')) {
+    if (getToken('accessToken')) {
       navigate(location.state?.from || '/dashboard', { replace: true })
     }
   }, [navigate, location])
