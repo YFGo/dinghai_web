@@ -40,7 +40,7 @@ export interface UserInfo {
 // 发送验证码参数类型
 export interface SendCaptchaParams {
   user_email: string
-  send_action: 'register' | 'login' | 'reset_password'
+  send_action: 'sign' | 'login' | 'reset_password'
 }
 
 // 人机校验信息

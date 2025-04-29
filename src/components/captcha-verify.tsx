@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect } from 'react'
+import {message} from 'antd'
 import GoCaptcha from 'go-captcha-react'
 
 // 组件 Props 类型
@@ -57,7 +58,7 @@ function CaptchaVerify({ open, onSuccess, onClose, captchaId, masterImage, thumb
 
   // 验证码配置
   const [rotateConfig] = useState<RotateConfig>({
-    width: 300,
+    width: 450,
     height: 220,
     scope: true
   })
@@ -80,13 +81,16 @@ function CaptchaVerify({ open, onSuccess, onClose, captchaId, masterImage, thumb
       // 验证是否通过
       await onSubmit(captchaId, angle)
       
+      message.success('验证成功')
+
       // 验证成功后重置验证码
       rotateRef.current?.reset()
 
       // 调用父组件的成功回调
       onSuccess()
-    } catch (error) {
-      console.error('验证失败:', error)
+    } catch (error: any) {
+      // console.error('验证失败:', error)
+      message.error(error.msg)
       rotateRef.current?.reset()
     }
   }
@@ -95,49 +99,16 @@ function CaptchaVerify({ open, onSuccess, onClose, captchaId, masterImage, thumb
   const handleRefresh = async () => {
     try {
       await onRefresh()
-      // 刷新成功后重置验证码
-      rotateRef.current?.refresh()
     } catch (error) {
       console.error('刷新验证码失败:', error)
     }
   }
 
   return (
-    <div
-      style={{
-        display: open ? 'block' : 'none',
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100vw',
-        height: '100vh',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)', // 半透明遮罩
-        zIndex: 999
-      }}
-      onClick={onClose} // 点击遮罩层触发关闭
-    >
+    <div className={`fixed inset-0 z-[999] bg-black/50 ${open ? 'block' : 'hidden'}`} onClick={onClose}>
       <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          position: 'fixed',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          zIndex: 1000,
-          background: 'white',
-          padding: '20px',
-          borderRadius: '8px',
-          boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-          width: '90%', // 响应式宽度
-          maxWidth: '600px', // 最大宽度限制
-          height: 'auto',
-          maxHeight: '90vh', // 防止过高
-          overflow: 'auto' // 内容过多时滚动
-        }}
-        onClick={e => e.stopPropagation()} // 阻止点击内容区域冒泡到遮罩
-      >
+        className="fixed left-1/2 top-1/2 z-[1000] flex h-auto  -translate-x-1/2 -translate-y-1/2 flex-col items-center overflow-auto rounded-lg  shadow-lg"
+        onClick={e => e.stopPropagation()}>
         <GoCaptcha.Rotate
           data={rotateData}
           events={{
@@ -148,7 +119,9 @@ function CaptchaVerify({ open, onSuccess, onClose, captchaId, masterImage, thumb
             close: onClose,
             confirm: handleConfirm
           }}
-          config={rotateConfig}
+          config={{
+            ...rotateConfig,
+          }}
           ref={rotateRef}
         />
       </div>

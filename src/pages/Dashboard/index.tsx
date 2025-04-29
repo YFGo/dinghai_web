@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Layout, Menu, theme, Row, Col, Card, Avatar, Dropdown, message, Spin, Space, Button } from 'antd'
 import { MenuFoldOutlined, MenuUnfoldOutlined, UserOutlined, DownOutlined, VideoCameraOutlined, UploadOutlined } from '@ant-design/icons'
+import { clearToken} from '@/utils/storage.ts'
 import type { MenuProps } from 'antd'
 import TopCard from './top-card'
 import EarthCard from './earth-card'
@@ -54,9 +55,12 @@ export default function Dashboard() {
 
   // 菜单项点击处理函数
   const onClick: MenuProps['onClick'] = ({ key }) => {
-    message.info(`Click on item ${key}`)
+    // message.info(`Click on item ${key}`)
     if (key === '3') {
+      message.info('退出登录')
       navigate('/login')
+      // 清空本地存储
+      clearToken()
     }
   }
 

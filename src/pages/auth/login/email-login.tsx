@@ -93,7 +93,6 @@ function EmailLogin({ form, loading, onSubmit }: EmailLoginProps) {
   // 4.验证图形验证码成功后,提交图形验证结果
   const handleCapSubmit = async (captchaId: string, angle: number) => {
         await submitCaptcha(captchaId, angle)
-        message.success('验证成功')
   }
 
   // 4.处理表单提交

@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from 'react'
-import { Form, Input, Button, message, FormInstance } from 'antd'
+import { Form, Input, Button, message, FormInstance, Space } from 'antd'
 import { UserOutlined, LockOutlined } from '@ant-design/icons'
 import CaptchaVerify from '@/components/captcha-verify'
 import { getCaptcha, sendCaptcha, submitCaptcha } from '@/api/services/user'
@@ -30,9 +30,10 @@ function UserRegister({ form, loading, onSubmit }: UserRegisterProps) {
 
   // 1.获取人机验证数据,并显示图形验证码组件
   const handleGetCode = async () => {
-    // 先验证邮箱格式
     try {
+      // 先验证邮箱格式
       await form.validateFields(['email'])
+
       // 获取图形验证码数据
       handleCapFetch()
     } catch (err) {
@@ -71,7 +72,7 @@ function UserRegister({ form, loading, onSubmit }: UserRegisterProps) {
       }
 
       // 调用发送短信验证码接口
-      await sendCaptcha({ user_email: email, send_action: 'login' })
+      await sendCaptcha({ user_email: email, send_action: 'sign' })
 
       message.success('验证码已发送')
       // 启动倒计时
@@ -112,7 +113,7 @@ function UserRegister({ form, loading, onSubmit }: UserRegisterProps) {
       message.error('两次密码不一致')
       return
     }
-    
+
     // 构建提交数据
     const submitData = {
       email: values.email,
@@ -136,9 +137,18 @@ function UserRegister({ form, loading, onSubmit }: UserRegisterProps) {
     <>
       {/* 注册表单 */}
       {/* 表单布局：horizontal 水平布局，vertical 垂直布局，inline 行内布局 */}
-      <Form onFinish={handleFinish} size="large">
-        <Form.Item name="email" label="用户名" rules={[{ required: true, message: '请输入用户名' }]}>
-          <Input prefix={<UserOutlined />} placeholder="请输入用户名" />
+      <Form form={form} onFinish={handleFinish} size="large" labelCol={{ span: 5 }} labelAlign="left" style={{ margin: '10px auto' }}>
+        <Form.Item
+          name="email"
+          label="邮箱"
+          rules={[
+            { required: true, message: '请输入邮箱' },
+            {
+              pattern: /^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)+$/,
+              message: '邮箱格式错误'
+            }
+          ]}>
+          <Input prefix={<UserOutlined />} placeholder="请输入邮箱" />
         </Form.Item>
         <Form.Item name="password" label="密码" rules={[{ required: true, message: '请输入密码' }]}>
           <Input.Password prefix={<LockOutlined />} placeholder="请输入密码" />
@@ -146,18 +156,13 @@ function UserRegister({ form, loading, onSubmit }: UserRegisterProps) {
         <Form.Item name="confirm_password" label="确认密码" rules={[{ required: true, message: '请确认密码' }]}>
           <Input.Password prefix={<LockOutlined />} placeholder="请确认密码" />
         </Form.Item>
-        <Form.Item
-          name="smsCode"
-          rules={[
-            { required: true, message: '请输入验证码' },
-            { pattern: /^\d{6}$/, message: '6位数字验证码' }
-          ]}>
-          <div style={{ display: 'flex', gap: 16 }}>
-            <Input placeholder="邮箱验证码" />
-            <Button onClick={handleGetCode} disabled={loading || countdown > 0}>
+        <Form.Item name="smsCode" label="验证码" style={{ marginBottom: 32 }}>
+          <Space.Compact className="w-full">
+            <Input placeholder="6位验证码" />
+            <Button style={{ width: 140 }} onClick={handleGetCode} disabled={loading || countdown > 0}>
               {countdown > 0 ? `${countdown}秒后重试` : '获取验证码'}
             </Button>
-          </div>
+          </Space.Compact>
         </Form.Item>
         {/* 按钮：type 按钮类型，loading 加载状态，block 块级元素 */}
         <Form.Item>
