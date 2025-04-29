@@ -1,78 +1,84 @@
-import axios, {
-  AxiosInstance,
-  AxiosResponse,
-  InternalAxiosRequestConfig,
-  AxiosHeaders
-} from 'axios'
+import axios, { AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
+import { getToken, setToken, removeToken } from '@/utils/storage'
+import { ResultEnum } from '@/types/enum'
 
-
-// AxiosRequestConfig → InternalAxiosRequestConfig
-// 使用 Axios 1.x + 的内部配置类型 InternalAxiosRequestConfig 来定义请求配置。
-
-// 创建实例时指定默认类型
 const request: AxiosInstance = axios.create({
+  baseURL: import.meta.env.VITE_APP_BASE_API,
   timeout: 10000,
-  headers: new AxiosHeaders({
+  headers: {
     'Content-Type': 'application/json'
-  }),
-  baseURL: import.meta.env.VITE_APP_BASE_API
+  }
 })
 
-// 增强类型声明
-declare module 'axios' {
-  interface InternalAxiosRequestConfig {
-    // 添加自定义配置项
-    noToken?: boolean
-    retryCount?: number
-  }
-}
+// 刷新状态控制
+let isRefreshing = false
+let requests: (() => void)[] = []
 
 // 请求拦截器
-request.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => {
-    let token = null;
-    const url = config.url;
-    if(sessionStorage.getItem('accessToken') !== null && url?.indexOf('/newToken') === -1){
-      token = sessionStorage.getItem('accessToken');
-      config.headers["accessToken"] = token;
-    }
-    return config;
-  },
-  error => {
-    return Promise.reject(error)
+// 当请求 URL 不是刷新 Token 的接口时，才携带 Authorization 头
+request.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+  let token = getToken('access_token')
+  if (token && !config.url?.includes('/waf/refreshToken')) {
+    config.headers.Authorization = `Bearer ${token}`
   }
-)
-
-const getNewToken = async () => {
- const url = "";
- let token = null;
- if(sessionStorage.getItem('refreshToken')!== null){
-   token = JSON.parse(sessionStorage.getItem('refreshToken')!);
-  }
-  return await axios.get(url, { headers: { "accessToken": token }, isRefresh: true }) 
-}
+  return config
+})
 
 // 响应拦截器
 request.interceptors.response.use(
-  async (res: AxiosResponse) => {
-    // 判断401状态码
-    if (res.status === 401 && !res.config.isRefresh) {
-      // 自动续期
-      const res2 = await getNewToken();
-      if(res2.data.code == 200){
-        console.log("自动续期成功:" + new Date().toLocaleString());
-        // 更新sessionStorage中相关token
-        sessionStorage.setItem('accessToken', JSON.stringify(res2.data.data.accessToken));
-        sessionStorage.setItem('refreshToken', JSON.stringify(res2.data.data.refreshToken));
-        // 重新请求
-        res = await axios.request(res.config);
-      }
+  (response: AxiosResponse) => {
+    const data= response.data
+    // Relfect.has() 方法判断对象是否包含指定的属性
+    const isSuccess = data && Reflect.has(data, 'code') && data.code === ResultEnum.SUCCESS        
+    if (isSuccess) {      
+      return data
+    } else {
+      return Promise.reject(response.data)
     }
-      return res;
   },
-  error => {
-    // 错误处理...
+
+  async error => {
+    const originalRequest = error.config
+    
+    // 处理 401 错误
+    // _retry 确保每个 401 错误的请求最多只尝试刷新一次 Token
+    // 只与前端有关,防止因 Token 刷新失败导致的无限重试循环
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true
+
+      if (!isRefreshing) {
+        isRefreshing = true
+
+        try {
+          const refresh_token = getToken('refresh_token')
+          const { data } = await axios.post('/waf/refreshToken', { refresh_token })
+
+          setToken('access_token', data.access_token)
+          setToken('refresh_token', data.refresh_token)
+
+          // 重试队列中的请求
+          requests.forEach(cb => cb())
+          requests = []
+          return request(originalRequest)
+        } catch (e) {
+          removeToken('access_token')
+          removeToken('refresh_token')
+          window.location.href = '/login'
+          return Promise.reject(e)
+        } finally {
+          isRefreshing = false
+        }
+      }
+
+      // 将请求加入队列
+      return new Promise(resolve => {
+        requests.push(() => {
+          resolve(request(originalRequest))
+        })
+      })
+    }
     return Promise.reject(error)
   }
 )
+
 export default request

@@ -1,45 +1,59 @@
-// EarthCard.tsx
 import { useEffect, useRef } from 'react'
-import * as echarts from 'echarts'
-import 'echarts-gl'
-import earth from '@/assets/img/earth.jpg'
-import starfield from '@/assets/img/starfield.jpg'
+import earthFlyLine from 'earth-flyline'
+import geojson from '@/assets/earth_map/world.json'
 
-function EarthCard () {
-  const chartRef = useRef<HTMLDivElement>(null)
+const EarthCard = () => {
+  const containerRef = useRef(null)
 
   useEffect(() => {
-    if (!chartRef.current) return
+    // 注册地图
+    earthFlyLine.registerMap('world', geojson as any)
 
-    const chart = echarts.init(chartRef.current)
-    const option = {
-      globe: {
-        baseTexture: earth,
-        shading: 'lambert',
-        environment: starfield,
-        atmosphere: {
-          show: true
+    // 初始化图表
+    const chart = earthFlyLine.init({
+      dom: containerRef.current,
+      map: 'world',
+      config: {
+        R: 140,
+        earth: {
+          color: '#13162c'
         },
-        light: {
-          ambient: {
-            intensity: 0.1
-          },
-          main: {
-            intensity: 1.5
+        mapStyle: {
+          areaColor: '#2e3564',
+          lineColor: '#797eff'
+        },
+        spriteStyle: {
+          color: '#797eff'
+        },
+        pathStyle: {
+          color: '#cd79ff'
+        },
+        flyLineStyle: {
+          color: '#cd79ff'
+        },
+        scatterStyle: {
+          color: '#cd79ff'
+        },
+        hoverRegionStyle: {
+          areaColor: '#cd79ff'
+        },
+        regions: {
+          China: {
+            areaColor: '#2e3564'
           }
         }
       }
-    }
+    })
 
-    chart.setOption(option)
-
-    // 清理函数
+    // 组件卸载时销毁实例
     return () => {
-      chart.dispose()
+      chart?.destroy()
     }
   }, [])
 
-  return <div ref={chartRef} className="chart-container" />
+  return (
+      <div ref={containerRef} className="h-[600px] rounded-md truncate shadow-sm" />
+  )
 }
 
 export default EarthCard

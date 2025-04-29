@@ -1,6 +1,7 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
-import Login from '../pages/login';
-import AuthRoute from '@/components/AuthRoute';
+import Login from '../pages/auth/login';
+import Register from '../pages/auth/register';
+// import AuthRoute from '@/components/AuthRoute';
 import Dashboard from '@/pages/dashboard';
 import Page403 from '@/pages/error/Page403';
 
@@ -11,18 +12,20 @@ const router = createBrowserRouter([
     element: <Navigate to="/login" replace /> // 重定向到登录页
   },
   {
-    path: '/login',
-    element: <Login />
-  },
-  {
     path: '/',
     element: <Navigate to="/login" replace />
   },
   {
+    path: '/login',
+    element: <Login />
+  },
+  {
+    path: '/register',
+    element: <Register />
+  },
+  {
     path: '/dashboard',
-    element: (
-        <Dashboard />
-    )
+    element: <Dashboard />
   },
   {
     path: '/403',

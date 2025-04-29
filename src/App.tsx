@@ -5,8 +5,7 @@ import zhCN from 'antd/locale/zh_CN';
 import { Provider } from 'react-redux';
 import router from "@/router";
 import store from '@/redux/index.ts';
-import './App.scss'
-// import 'reset-css'
+import './global.css'
 
 const App = () => {
   return (

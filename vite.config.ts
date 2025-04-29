@@ -2,7 +2,6 @@
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from 'tailwindcss'
-import autoprefixer from 'autoprefixer'
 // import path from 'path'
 import { resolve } from 'path'
 
@@ -23,7 +22,7 @@ export default defineConfig(({ mode }) => {
     plugins: [react()],
     css: {
       postcss: {
-        plugins: [tailwindcss, autoprefixer]
+        plugins: [tailwindcss()]
       }
     },
     resolve: {
@@ -39,8 +38,8 @@ export default defineConfig(({ mode }) => {
       host: true,
       proxy: {
         '/dev-api': {
-          target: 'http://8.154.36.180:8002/app/user/v1',
-          // "http://marchbooks.a1.luyouxia.net:28638/app/user/v1"
+          target: 'http://47.108.221.229:8002/app/user/v1',
+          //  'http://8.154.36.180:8002/app/user/v1,'
           // 作用: 设置是否更改请求头中的 Origin 字段。
           // 默认 false。设置为 true 可以解决跨域问题。
           changeOrigin: true,
