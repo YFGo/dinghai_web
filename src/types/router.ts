@@ -41,7 +41,7 @@ export interface RouteMeta {
   /**
    * external link and iframe need
    */
-  frameSrc?: URL
+  frameSrc?: string
   /**
    * dynamic route params
    *

@@ -6,7 +6,7 @@ const HomePage = lazy(() => import('@/pages/dashboard'))
 
 const dashboard: AppRouteObject = {
   order: 1,
-  path: '/dashboard',
+  path: '/dashboard', // 父路由路径
   element: (
     <Suspense fallback={<div>Loading...</div>}>
       <Outlet />
@@ -19,15 +19,15 @@ const dashboard: AppRouteObject = {
   },
   children: [
     {
-      index: true,
-      element: <Navigate to="workbench" replace />
+      index: true, // 默认子路由
+      element: <Navigate to="workbench" replace /> // 导航到子路由的 workbench
     },
     {
-      path: '/dashboard',
+      path: 'workbench',
       element: <HomePage />,
       meta: {
-        label: 'sys.menu.dashboard',
-        key: '/dashboard'
+        label: 'sys.menu.dashboard.workbench',
+        key: '/dashboard/workbench'
       }
     }
   ]

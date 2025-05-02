@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from 'react'
-import {message} from 'antd'
+import { message } from 'antd'
 import GoCaptcha from 'go-captcha-react'
 
 // 组件 Props 类型
@@ -44,7 +44,7 @@ interface CaptchaMethods {
   close: () => void
 }
 
-function CaptchaVerify({ open, onSuccess, onClose, captchaId, masterImage, thumbImage, onRefresh,onSubmit }: CaptchaVerifyProps) {
+function CaptchaVerify({ open, onSuccess, onClose, captchaId, masterImage, thumbImage, onRefresh, onSubmit }: CaptchaVerifyProps) {
   // 旋转验证码引用
   const rotateRef = useRef<CaptchaMethods>(null)
 
@@ -80,7 +80,7 @@ function CaptchaVerify({ open, onSuccess, onClose, captchaId, masterImage, thumb
 
       // 验证是否通过
       await onSubmit(captchaId, angle)
-      
+
       message.success('验证成功')
 
       // 验证成功后重置验证码
@@ -106,21 +106,19 @@ function CaptchaVerify({ open, onSuccess, onClose, captchaId, masterImage, thumb
 
   return (
     <div className={`fixed inset-0 z-[999] bg-black/50 ${open ? 'block' : 'hidden'}`} onClick={onClose}>
-      <div
-        className="fixed left-1/2 top-1/2 z-[1000] flex h-auto  -translate-x-1/2 -translate-y-1/2 flex-col items-center overflow-auto rounded-lg  shadow-lg"
-        onClick={e => e.stopPropagation()}>
+      <div className="fixed left-1/2 top-1/2 z-[1000] flex h-auto  -translate-x-1/2 -translate-y-1/2 flex-col items-center overflow-auto rounded-lg  shadow-lg" onClick={e => e.stopPropagation()}>
         <GoCaptcha.Rotate
           data={rotateData}
           events={{
             rotate: (angle: number) => {
-              console.log('当前旋转角度:', angle)
+              // console.log('当前旋转角度:', angle)
             },
             refresh: handleRefresh,
             close: onClose,
             confirm: handleConfirm
           }}
           config={{
-            ...rotateConfig,
+            ...rotateConfig
           }}
           ref={rotateRef}
         />

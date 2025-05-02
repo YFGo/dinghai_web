@@ -1,13 +1,23 @@
-// store/index.js
+import { configureStore } from '@reduxjs/toolkit'
+import userReducer from './modules/userSlice'
+import { syncTokenFromStorage } from './modules/userSlice'
 
-import { configureStore } from '@reduxjs/toolkit';
-import { counterReducer } from './modules/counterSlice';
-
-// 创建根 store
-const store = configureStore({
+export const store = configureStore({
   reducer: {
-    counter: counterReducer,  // 将源 reducer 组合到根 store 中
-  },
-});
+    user: userReducer
+  }
+})
 
-export default store;
+// 从 localStorage 初始化状态
+const initializeStore = () => {
+  // 从localStorage同步token到Redux状态
+  // 确保页面刷新后仍能保持登录状态
+  store.dispatch(syncTokenFromStorage())
+}
+
+initializeStore()
+
+export type RootState = ReturnType<typeof store.getState>
+export type AppDispatch = typeof store.dispatch
+
+export default store

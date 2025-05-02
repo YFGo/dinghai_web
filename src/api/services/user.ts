@@ -1,5 +1,5 @@
 import request from '../request'
-import { BaseResponse } from '@/types/response'
+import { BaseResponse } from '@/types/api'
 
 
 export type LoginMethod = 1 | 2 | 3

@@ -3,6 +3,8 @@ import { Form, Button, Tabs, Card, message, Layout } from 'antd'
 import type { LoginParams } from '@/api/services/user'
 import type { TabsProps } from 'antd'
 import { useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { setUserToken } from '@/redux/modules/userSlice'
 import { handleUserLogin } from '@/api/services/user'
 import { getToken, setToken } from '@/utils/storage.ts'
 
@@ -17,6 +19,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false)
   const [activeTab, setActiveTab] = useState('1')
   const [form] = Form.useForm()
+      const dispatch = useDispatch()
 
   // 统一处理登录逻辑
   const handleLogin = async (values: LoginParams) => {
@@ -29,18 +32,11 @@ const Login = () => {
       // 获取token
       const { data } = await handleUserLogin(params)
 
-      // 存储Token
-      setToken('access_token', data.access_token)
-      setToken('refresh_token', data.refresh_token)
-
-      // 获取用户信息
-      // const { data: userInfo } = await authApi.getUserInfo();
-
-      // message.success(`欢迎回来，${userInfo.name}`);
-
-      // 登录成功后跳转到首页或上次访问的页面
-      // const redirectPath = location.state?.from || '/dashboard'
+      // 存储到redux中
+      dispatch(setUserToken(data))
       
+      message.success('登录成功')
+
       const redirectPath = '/dashboard'
 
       navigate(redirectPath, {
