@@ -10,11 +10,12 @@ type Props = {
   children: React.ReactNode // 子组件（要保护的页面内容）
 }
 
+// ProtectedRoute 组件，用于保护路由访问
 export default function ProtectedRoute({ children }: Props) {
   const navigate = useNavigate()
 
   const { access_token } = useSelector(selectUserToken)  
-  console.log(access_token,3284032);
+  // console.log(access_token,3284032);
   
   // 检查登录状态的函数
   const check = useCallback(() => {

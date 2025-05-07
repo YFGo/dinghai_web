@@ -7,9 +7,9 @@ const EarthCard = () => {
   // type: flyLine(飞线) | point(点) | road(路径) | wall(三维的立体结构) | mapStreamLine(动态流线) | bar(柱状图)
 
   const containerRef = useRef(null)
-
-  // 存储当前选中的区域的key
-  const [currentRegionKey, setCurrentRegionKey] = useState<string | null>(null)
+  
+  // 存储上一个选中的区域对象
+  const prevSelectedRegionRef = useRef<any>(null)
 
   const pointData = [
     {
@@ -80,6 +80,8 @@ const EarthCard = () => {
     }
   }
 
+
+
   // 首次渲染时初始化图表
   useEffect(() => {
     // 注册地图
@@ -94,13 +96,27 @@ const EarthCard = () => {
     })
 
     // 处理点击事件
-    chart.on('click', (event, params) => {
-      console.log('点击事件', event);
-      
+    chart.on('dblclick', (event, params) => {
       if (params) {
-           const regionName = params.name
-        if (regionName) {
+        console.log('点击区域', params)
+        // const cur = {
+        //   [params.userData.name]: {
+        //     areaColor: '#1677ff' //区域颜色
+        //   }
+        // }
+        // console.log((chart.options.config.regions = cur), 3248042)
+        
+        // 如果有上一个选中的区域，恢复其颜色
+        if (prevSelectedRegionRef.current && prevSelectedRegionRef.current !== params) {
+          prevSelectedRegionRef.current.userData.backupColor = chartConfig.mapStyle.areaColor
         }
+        
+        
+        // 设置当前区域为高亮色
+        params.userData.backupColor = '#cd79ff'
+        
+        // 保存当前区域为上一个选中的区域
+        prevSelectedRegionRef.current = params
       }
     })
 

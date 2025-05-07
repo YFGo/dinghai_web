@@ -17,6 +17,9 @@ importers:
       '@types/node':
         specifier: ^22.14.1
         version: 22.14.1
+      '@types/ramda':
+        specifier: ^0.30.2
+        version: 0.30.2
       antd:
         specifier: ^5.24.8
         version: 5.24.8(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -35,9 +38,12 @@ importers:
       go-captcha-react:
         specifier: ^1.0.4
         version: 1.0.4(react@18.3.1)
-      lodash:
-        specifier: ^4.17.21
-        version: 4.17.21
+      i18next:
+        specifier: ^25.0.2
+        version: 25.0.2(typescript@5.7.3)
+      ramda:
+        specifier: ^0.30.1
+        version: 0.30.1
       react:
         specifier: ^18.2.0
         version: 18.3.1
@@ -47,6 +53,9 @@ importers:
       react-error-boundary:
         specifier: ^5.0.0
         version: 5.0.0(react@18.3.1)
+      react-i18next:
+        specifier: ^15.5.1
+        version: 15.5.1(i18next@25.0.2(typescript@5.7.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.7.3)
       react-redux:
         specifier: ^9.2.0
         version: 9.2.0(@types/react@19.1.2)(react@18.3.1)(redux@5.0.1)
@@ -60,9 +69,6 @@ importers:
       '@eslint/js':
         specifier: ^9.22.0
         version: 9.25.0
-      '@types/lodash':
-        specifier: ^4.17.16
-        version: 4.17.16
       '@types/react':
         specifier: ^19.0.10
         version: 19.1.2
@@ -796,11 +802,11 @@ packages:
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
 
-  '@types/lodash@4.17.16':
-    resolution: {integrity: sha512-HX7Em5NYQAXKW+1T+FiuG27NGwzJfCX3s1GjOa7ujxZa52kjJLOr4FUxT+giF6Tgxv1e+/czV/iTtBw27WTU9g==}
-
   '@types/node@22.14.1':
     resolution: {integrity: sha512-u0HuPQwe/dHrItgHHpmw3N2fYCR6x4ivMNbPHRkBVP4CvN+kiRrKHWk3i8tXiO/joPwXLMYvF9TTF0eqgHIuOw==}
+
+  '@types/ramda@0.30.2':
+    resolution: {integrity: sha512-PyzHvjCalm2BRYjAU6nIB3TprYwMNOUY/7P/N8bSzp9W/yM2YrtGtAnnVtaCNSeOZ8DzKyFDvaqQs7LnWwwmBA==}
 
   '@types/react-dom@19.1.2':
     resolution: {integrity: sha512-XGJkWF41Qq305SKWEILa1O8vzhb3aOo3ogBlSmiqNko/WmRb6QIaweuZCXjKygVDXpzXb5wyxKTSOsmkuqj+Qw==}
@@ -1318,6 +1324,17 @@ packages:
     resolution: {integrity: sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==}
     engines: {node: '>= 0.4'}
 
+  html-parse-stringify@3.0.1:
+    resolution: {integrity: sha512-KknJ50kTInJ7qIScF3jeaFRpMpE8/lfiTdzf/twXyPBLAGrLRTmkz3AdTnKeh40X8k9L2fdYwEp/42WGXIRGcg==}
+
+  i18next@25.0.2:
+    resolution: {integrity: sha512-xWxgK8GAaPYkV9ia2tdgbtdM+qiC+ysVTBPvXhpCORU/+QkeQe3BSI7Crr+c4ZXULN1PfnXG/HY2n7HGx4KKBg==}
+    peerDependencies:
+      typescript: ^5
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
   ignore@5.3.2:
     resolution: {integrity: sha512-hsBTNUqQTDwkWtcdYI2i06Y/nUBEsNEDJKjWdigLvegy8kDuJAS8uRlpkkcQpyEXL0Z/pjDy5HBmMjRCJ2gq+g==}
     engines: {node: '>= 4'}
@@ -1501,9 +1518,6 @@ packages:
 
   lodash.merge@4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
-
-  lodash@4.17.21:
-    resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
 
   loose-envify@1.4.0:
     resolution: {integrity: sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q==}
@@ -1689,6 +1703,9 @@ packages:
 
   queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
+
+  ramda@0.30.1:
+    resolution: {integrity: sha512-tEF5I22zJnuclswcZMc8bDIrwRHRzf+NqVEmqg50ShAZMP7MWeR/RGDthfM/p+BlqvF2fXAzpn8i+SJcYD3alw==}
 
   rc-cascader@3.33.1:
     resolution: {integrity: sha512-Kyl4EJ7ZfCBuidmZVieegcbFw0RcU5bHHSbtEdmuLYd0fYHCAiYKZ6zon7fWAVyC6rWWOOib0XKdTSf7ElC9rg==}
@@ -1928,6 +1945,22 @@ packages:
     peerDependencies:
       react: '>=16.13.1'
 
+  react-i18next@15.5.1:
+    resolution: {integrity: sha512-C8RZ7N7H0L+flitiX6ASjq9p5puVJU1Z8VyL3OgM/QOMRf40BMZX+5TkpxzZVcTmOLPX5zlti4InEX5pFyiVeA==}
+    peerDependencies:
+      i18next: '>= 23.2.3'
+      react: '>= 16.8.0'
+      react-dom: '*'
+      react-native: '*'
+      typescript: ^5
+    peerDependenciesMeta:
+      react-dom:
+        optional: true
+      react-native:
+        optional: true
+      typescript:
+        optional: true
+
   react-is@18.3.1:
     resolution: {integrity: sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==}
 
@@ -2130,12 +2163,18 @@ packages:
   ts-interface-checker@0.1.13:
     resolution: {integrity: sha512-Y/arvbn+rrz3JCKl9C4kVNfTfSm2/mEp5FSz5EsZSANGPSlQrpRI5M4PKF+mJnE52jOO90PnPSc3Ur3bTQw0gA==}
 
+  ts-toolbelt@9.6.0:
+    resolution: {integrity: sha512-nsZd8ZeNUzukXPlJmTBwUAuABDe/9qtVDelJeT/qW0ow3ZS3BsQJtNkan1802aM9Uf68/Y8ljw86Hu0h5IUW3w==}
+
   tslib@2.3.0:
     resolution: {integrity: sha512-N82ooyxVNm6h1riLCoyS9e3fuJ3AMG2zIZs2Gd1ATcSFjSA23Q0fzjjZeh0jbJvWVDZ0cJT8yaNNaaXHzueNjg==}
 
   type-check@0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
     engines: {node: '>= 0.8.0'}
+
+  types-ramda@0.30.1:
+    resolution: {integrity: sha512-1HTsf5/QVRmLzcGfldPFvkVsAdi1db1BBKzi7iW3KBUlOICg/nKnFS+jGqDJS3YD8VsWbAh7JiHeBvbsw8RPxA==}
 
   typescript-eslint@8.30.1:
     resolution: {integrity: sha512-D7lC0kcehVH7Mb26MRQi64LMyRJsj3dToJxM1+JVTl53DQSV5/7oUGWQLcKl1C1KnoVHxMMU2FNQMffr7F3Row==}
@@ -2214,6 +2253,10 @@ packages:
         optional: true
       yaml:
         optional: true
+
+  void-elements@3.1.0:
+    resolution: {integrity: sha512-Dhxzh5HZuiHQhbvTW9AMetFfBHDMYpo23Uo9btPXgdYP+3T5S+p+jgNy7spra+veYhBP2dCSgxR/i2Y02h5/6w==}
+    engines: {node: '>=0.10.0'}
 
   which@2.0.2:
     resolution: {integrity: sha512-BLI3Tl1TW3Pvl70l3yq3Y64i+awpwXqsGBYWkkqMtnbXgrMD+yj7rhW0kuEDxzJaYXGjEW5ogapKNMEKNMjibA==}
@@ -2843,11 +2886,13 @@ snapshots:
 
   '@types/json-schema@7.0.15': {}
 
-  '@types/lodash@4.17.16': {}
-
   '@types/node@22.14.1':
     dependencies:
       undici-types: 6.21.0
+
+  '@types/ramda@0.30.2':
+    dependencies:
+      types-ramda: 0.30.1
 
   '@types/react-dom@19.1.2(@types/react@19.1.2)':
     dependencies:
@@ -3480,6 +3525,16 @@ snapshots:
     dependencies:
       function-bind: 1.1.2
 
+  html-parse-stringify@3.0.1:
+    dependencies:
+      void-elements: 3.1.0
+
+  i18next@25.0.2(typescript@5.7.3):
+    dependencies:
+      '@babel/runtime': 7.27.0
+    optionalDependencies:
+      typescript: 5.7.3
+
   ignore@5.3.2: {}
 
   immer@10.1.1: {}
@@ -3614,8 +3669,6 @@ snapshots:
   lodash-es@4.17.21: {}
 
   lodash.merge@4.6.2: {}
-
-  lodash@4.17.21: {}
 
   loose-envify@1.4.0:
     dependencies:
@@ -3765,6 +3818,8 @@ snapshots:
   punycode@2.3.1: {}
 
   queue-microtask@1.2.3: {}
+
+  ramda@0.30.1: {}
 
   rc-cascader@3.33.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
@@ -4096,6 +4151,16 @@ snapshots:
       '@babel/runtime': 7.27.0
       react: 18.3.1
 
+  react-i18next@15.5.1(i18next@25.0.2(typescript@5.7.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.7.3):
+    dependencies:
+      '@babel/runtime': 7.27.0
+      html-parse-stringify: 3.0.1
+      i18next: 25.0.2(typescript@5.7.3)
+      react: 18.3.1
+    optionalDependencies:
+      react-dom: 18.3.1(react@18.3.1)
+      typescript: 5.7.3
+
   react-is@18.3.1: {}
 
   react-redux@9.2.0(@types/react@19.1.2)(react@18.3.1)(redux@5.0.1):
@@ -4317,11 +4382,17 @@ snapshots:
 
   ts-interface-checker@0.1.13: {}
 
+  ts-toolbelt@9.6.0: {}
+
   tslib@2.3.0: {}
 
   type-check@0.4.0:
     dependencies:
       prelude-ls: 1.2.1
+
+  types-ramda@0.30.1:
+    dependencies:
+      ts-toolbelt: 9.6.0
 
   typescript-eslint@8.30.1(eslint@9.25.0(jiti@2.4.2))(typescript@5.7.3):
     dependencies:
@@ -4375,6 +4446,8 @@ snapshots:
       lightningcss: 1.29.2
       sass: 1.86.3
       yaml: 2.7.1
+
+  void-elements@3.1.0: {}
 
   which@2.0.2:
     dependencies:

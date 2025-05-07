@@ -1,167 +1,57 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Layout, Menu, theme, Row, Col, Card, Avatar, Dropdown, message, Spin, Space, Button } from 'antd'
-import { MenuFoldOutlined, MenuUnfoldOutlined, UserOutlined, DownOutlined, VideoCameraOutlined, UploadOutlined } from '@ant-design/icons'
-import { clearToken} from '@/utils/storage.ts'
-import type { MenuProps } from 'antd'
+import { Row, Col, Card, Spin } from 'antd'
+
 import TopCard from './top-card'
 import EarthCard from './earth-card'
 import TrackCard from './track-card'
 import DetailCard from './detail-card'
 
-const { Header, Sider, Content } = Layout
-
 export default function Dashboard() {
-  // 定义导航钩子
-  const navigate = useNavigate()
-
-  // 定义状态管理
-  const [collapsed, setCollapsed] = useState(false)
   const [loading, setLoading] = useState(false)
   const [earthLoading, setEarthLoading] = useState(false)
   const [trackLoading, setTrackLoading] = useState(false)
 
-  // 获取主题变量
-  const {
-    token: { colorBgContainer }
-  } = theme.useToken()
-
-  // 定义菜单项
-  const menuItems: MenuProps['items'] = [
-    {
-      label: (
-        <a href="https://www.antgroup.com" target="_blank" rel="noopener noreferrer">
-          1st menu item
-        </a>
-      ),
-      key: '0'
-    },
-    {
-      label: (
-        <a href="https://www.aliyun.com" target="_blank" rel="noopener noreferrer">
-          2nd menu item
-        </a>
-      ),
-      key: '1'
-    },
-    {
-      type: 'divider'
-    },
-    {
-      label: '退出登录',
-      key: '3'
-    }
-  ]
-
-  // 菜单项点击处理函数
-  const onClick: MenuProps['onClick'] = ({ key }) => {
-    // message.info(`Click on item ${key}`)
-    if (key === '3') {
-      message.info('退出登录')
-      navigate('/login')
-      // 清空本地存储
-      clearToken()
-    }
-  }
-
-  // 模拟数据获取
+  // 模拟数据加载
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true)
-        // 这里替换为你的实际API地址
-        // const response = await axios.get('/api/dashboard/stats');
-        // setStatInfo(response.data);
-      } catch (error) {
-        console.error('Error fetching statistics:', error)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchData()
-  }, []) // 空依赖数组表示只在组件挂载时执行一次
+    setLoading(true)
+    const timer = setTimeout(() => setLoading(false), 800)
+    return () => clearTimeout(timer)
+  }, [])
 
   return (
-    <Layout className="min-h-screen">
-      {/* 侧边栏 */}
-      <Sider trigger={null} collapsed={collapsed} className="!fixed h-full z-50 shadow-xl" theme="dark">
-        <div className="h-12 bg-black/20 flex items-center justify-center text-white text-lg font-bold">{collapsed ? 'LOGO' : '定海网络安全平台'}</div>
-        <Menu
-          theme="dark"
-          mode="inline"
-          defaultSelectedKeys={['1']}
-          className="pt-4 bg-[#001529]"
-          items={[
-            { key: '1', icon: <UserOutlined />, label: '威胁地图' },
-            { key: '2', icon: <VideoCameraOutlined />, label: '攻击监控' },
-            { key: '3', icon: <UploadOutlined />, label: '报表分析' }
-          ]}
-        />
-      </Sider>
-
-      {/* 主布局 */}
-      <Layout className={`transition-all duration-300 ${collapsed ? 'pl-20' : 'pl-64'}`}>
-        {/* 头部 */}
-        <Header style={{ background: colorBgContainer }} className="!px-4 !h-16 flex justify-between items-center shadow-sm sticky top-0 z-40">
-          <div>
-            <Button type="text" icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />} onClick={() => setCollapsed(!collapsed)} className="!w-12 !h-12 flex items-center justify-center hover:!bg-gray-100" />
-          </div>
-          <div>
-            <Dropdown
-              menu={{
-                items: menuItems,
-                onClick
-              }}
-              trigger={['click']}>
-              <a onClick={e => e.preventDefault()}>
-                <Space>
-                  <Avatar size="small" icon={<UserOutlined />} />
-                  <span>用户</span>
-                  <DownOutlined />
-                </Space>
-              </a>
-            </Dropdown>
-          </div>
-        </Header>
-
-        {/* 内容区域 */}
-        <Content className="p-6 bg-gray-50 min-h-[calc(100vh-3rem)]">
-          <Row gutter={[16, 16]}>
-            {/* 地球可视化卡片 */}
+    <div className="p-4 bg-gray-50 min-h-screen">
+      <Spin spinning={loading}>
+        <div className="space-y-4">
+          {/* 顶部布局：TopCard 与 DetailCard 同级 */}
+          <Row gutter={16}>
+            {/* 左侧 TopCard（占满左侧空间） */}
             <Col span={16}>
               <TopCard />
-              <Card className="rounded-xl shadow-sm my-3">
-                {earthLoading ? (
-                  <Spin />
-                ) : (
-                  <div>
-                    <div className="text-2xl mb-4 font-bold">全球攻击分布</div>
-                    <EarthCard />
-                  </div>
-                )}
-              </Card>
-              <Card>
-                {trackLoading ? (
-                  <Spin />
-                ) : (
-                  <div>
-                    <div className="text-2xl mb-4 font-bold">攻击类型分布</div>
-                    <TrackCard />
-                  </div>
-                )}
-              </Card>
             </Col>
-            {/* 实时统计卡片 */}
-            <Col span={8} className="h-full">
-              <div>
-                <div className="text-2xl mb-4 font-bold">详细数据</div>
-                <DetailCard />
-              </div>
+
+            {/* 右侧 DetailCard（固定宽度） */}
+            <Col span={8}>
+              <DetailCard />
             </Col>
           </Row>
-        </Content>
-      </Layout>
-    </Layout>
+
+          {/* 下方可视化内容 */}
+          <Row gutter={16}>
+            <Col span={16}>
+              <Card title="全球攻击分布" loading={earthLoading}>
+                <EarthCard />
+              </Card>
+
+              <Card title="攻击类型分布" className="mt-4" loading={trackLoading}>
+                <TrackCard />
+              </Card>
+            </Col>
+
+            {/* 如果右侧下方需要留空，可以保持这个空 Col 或移除 */}
+            <Col span={8}>{/* 右侧下方内容（如有需要） */}</Col>
+          </Row>
+        </div>
+      </Spin>
+    </div>
   )
 }

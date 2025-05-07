@@ -1,7 +1,7 @@
 import { Suspense,lazy,useMemo } from 'react'
 import { Navigate, Outlet } from 'react-router-dom'
 import { Tag } from 'antd'
-import { isEmpty } from 'lodash'
+import { isEmpty } from 'ramda'
 import {BellOutlined} from '@ant-design/icons'
 import { CircleLoading } from '@/components/loading'
 import { useUserPermission } from '@/redux/modules/userSlice'
@@ -10,6 +10,13 @@ import { useUserPermission } from '@/redux/modules/userSlice'
 import type {Permission} from'@/types/entity'
 import type {AppRouteObject} from '@/types/router'
 import { BasicStatus, PermissionType } from '@/types/enum'
+
+import dashboard from '../routes/modules/dashboard'
+import wafRule from '../routes/modules/waf-rule'
+import wafSite from '../routes/modules/waf-site'
+import wafStrategy from '../routes/modules/waf-strategy'
+import wafWhiteList from '../routes/modules/waf-white-list'
+
 
 // 页面组件入口路径以及动态加载配置
 const ENTRY_PATH = '/src/pages'
@@ -168,6 +175,7 @@ const createCatalogueRoute = (permission: Permission, flattenedPermissions: Perm
   // 如果存在子路由，添加默认重定向逻辑
   if (!isEmpty(children)) {
     baseRoute.children?.unshift({
+      path: '', // 空路径表示默认路由
       index: true, // 标记为索引路由（当父路由路径被访问时激活）
       element: <Navigate to={children[0].route} replace /> // 重定向到第一个子路由
     });
@@ -252,11 +260,8 @@ function flattenTrees(permissions: Permission[]): Permission[] {
  * 用于支持基于模块的路由配置方式
  */
 function getRoutesFromModules(): AppRouteObject[] {
-  // 导入dashboard模块路由配置
-  const dashboard = require('../routes/modules/dashboard').default;
-  
   // 返回所有模块路由配置数组
-  return [dashboard];
+  return [dashboard, wafRule, wafSite, wafStrategy, wafWhiteList]
 }
 
 const ROUTE_MODE = import.meta.env.VITE_ROUTE_MODE; // 权限路由模式 permission | module

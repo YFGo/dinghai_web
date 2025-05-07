@@ -1,7 +1,7 @@
 import { createBrowserRouter, Navigate, RouterProvider, type RouteObject } from 'react-router-dom'
 import Login from '@/pages/auth/login/index'
 import ProtectedRoute from '@/router/components/protected-route'
-import Dashboard from '@/pages/dashboard/index'
+import DashboardLayout from '@/layouts/dashboard'
 import { usePermissionRoutes } from '@/router/hooks'
 import { ERROR_ROUTE } from '@/router/routes/error-routes'
 import ErrorBoundary from 'antd/es/alert/ErrorBoundary'
@@ -17,7 +17,6 @@ const PUBLIC_ROUTES: AppRouteObject =
       </ErrorBoundary>
     )
   }
-
 
 // 未匹配的路由(404)
 const NOT_FOUND_ROUTE = {
@@ -35,16 +34,12 @@ export default function Router() {
     element: (
       <ProtectedRoute>
         {/* 路由守卫 */}
-        <Dashboard />
+        <DashboardLayout />
       </ProtectedRoute>
     ),
     children: [
       { index: true, element: <Navigate to="/dashboard" replace /> }, // 首页重定向
-      ...permissionRoutes, // 合并动态路由
-      {
-        path: 'dashboard',
-        element: <Dashboard />
-      }
+      ...permissionRoutes // 合并动态路由
     ]
   }
 
@@ -53,7 +48,11 @@ export default function Router() {
   const routes = [PUBLIC_ROUTES, PROTECTED_ROUTES, ERROR_ROUTE, NOT_FOUND_ROUTE] as RouteObject[]
 
   // 创建基于 history 模式的路由
-  const router = createBrowserRouter(routes)
+  const router = createBrowserRouter(routes, {
+    future: {
+      v7_startTransition: true
+    }
+  })
 
   return <RouterProvider router={router} />
 }

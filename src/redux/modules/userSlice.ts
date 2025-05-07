@@ -69,8 +69,15 @@ export const { setUserInfo, setUserToken, syncTokenFromStorage, clearUserInfoAnd
 // 创建 selector 获取 token
 export const selectUserToken = (state: { user: UserState }) => state.user.userToken
 
-// 创建 selector 获取用户权限
-export const selectUserPermission = (state: { user: UserState }) => state.user.userInfo?.permissions || []
+// 导入createSelector用于记忆化选择器
+import { createSelector } from '@reduxjs/toolkit'
+
+// 创建记忆化的selector获取用户权限
+const selectUserState = (state: { user: UserState }) => state.user
+export const selectUserPermission = createSelector(
+  [selectUserState],
+  (userState) => userState.userInfo?.permissions || []
+)
 
 // 自定义hook：获取用户权限
 export function useUserPermission() {
