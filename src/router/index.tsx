@@ -48,11 +48,7 @@ export default function Router() {
   const routes = [PUBLIC_ROUTES, PROTECTED_ROUTES, ERROR_ROUTE, NOT_FOUND_ROUTE] as RouteObject[]
 
   // 创建基于 history 模式的路由
-  const router = createBrowserRouter(routes, {
-    future: {
-      v7_startTransition: true
-    }
-  })
+  const router = createBrowserRouter(routes)
 
   return <RouterProvider router={router} />
 }

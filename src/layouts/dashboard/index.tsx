@@ -1,18 +1,23 @@
+import { useState } from'react'
 import { Outlet } from 'react-router-dom'
-import { UserOutlined, DownOutlined } from '@ant-design/icons'
+import { UserOutlined, DownOutlined,MenuFoldOutlined,MenuUnfoldOutlined,SafetyOutlined } from '@ant-design/icons'
 import { clearToken } from '@/utils/storage.ts'
-import { useNavigate } from 'react-router-dom'
-import { Layout, theme, Avatar, Dropdown, message, Space } from 'antd'
+import { useRouter } from '@/router/hooks/use-router'
+import { Layout, theme, Avatar, Dropdown, message, Space, Typography, Button } from 'antd'
 import type { MenuProps } from 'antd'
-
-import { usePermissionRoutes } from '@/router/hooks'
+import ThemeToggleButton from '@/components/ThemeToggleButton'
 import SidebarMenu from './side-bar-menu'
 
 
 const { Header, Content, Footer, Sider } = Layout
+const { Title } = Typography
 
 export default function DashboardLayout() {
-  const navigate = useNavigate()
+  const router = useRouter()
+  const [collapsed, setCollapsed] = useState(false)
+  const toggle = () => {
+    setCollapsed(!collapsed)
+  }
 
   const {
     token: { colorBgContainer }
@@ -40,35 +45,50 @@ export default function DashboardLayout() {
     if (key === 'logout') {
       message.success('已退出登录')
       clearToken()
-      navigate('/login')
+      router.push('/login')
     }
   }
 
   return (
     <Layout>
       {/* 侧面导航栏 */}
-      <Sider width={200} collapsible>
-        <div>
-          ddjawjkldjkawkjlfaw😘
+      <Sider width={200} collapsed={collapsed}>
+        <div className="h-16 px-4 flex items-center overflow-hidden">
+          <SafetyOutlined className="text-3xl mb-2 ml-2" />
+          {!collapsed && (
+            <Title level={4} className="ml-2 whitespace-nowrap transition-all duration-300" style={{ opacity: collapsed ? 0 : 1, marginLeft: collapsed ? 0 : '0.5rem' }}>
+              定海WAF
+            </Title>
+          )}
         </div>
-        <SidebarMenu></SidebarMenu>
+        <SidebarMenu />
       </Sider>
-      <Layout className='min-h-screen'>
-        <Header className="bg-white shadow-sm flex items-center justify-between px-4">
-          <div className="text-xl font-bold">工作台</div>
-          <Dropdown menu={{ items: menuItems, onClick: handleMenuClick }} trigger={['click']} overlayClassName="w-40">
-            <Space>
-              <Avatar icon={<UserOutlined />} />
-              <span>管理员</span>
-              <DownOutlined />
-            </Space>
-          </Dropdown>
+      <Layout className="min-h-screen">
+        <Header className=" shadow-sm flex items-center justify-between px-4">
+          <div>
+            <Button type="text" icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />} onClick={toggle} />
+            <span className="text-xl font-bold">工作台</span>
+          </div>
+          <div>
+            <span className="mr-4">
+              <ThemeToggleButton />
+            </span>
+            <span>
+              <Dropdown menu={{ items: menuItems, onClick: handleMenuClick }} trigger={['click']} overlayClassName="w-40">
+                <Space>
+                  <Avatar icon={<UserOutlined />} />
+                  <span>管理员</span>
+                  <DownOutlined />
+                </Space>
+              </Dropdown>
+            </span>
+          </div>
         </Header>
-        <Content>
+        <Content className="p-3">
           {/* 路由内容 */}
           <Outlet />
         </Content>
-        <Footer style={{ textAlign: 'center' }}>Ant Design ©2023 Created by Ant UED</Footer>
+        <Footer style={{ textAlign: 'center' }}>定海安全管理平台@2025</Footer>
       </Layout>
     </Layout>
   )

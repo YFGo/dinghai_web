@@ -1,8 +1,9 @@
 import { Button, Result } from 'antd';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import { useRouter } from '@/router/hooks/use-router'
 
 export default function PageError() {
-  const navigate = useNavigate();
+  const router = useRouter()
   const location = useLocation();
   
   // 从路由state获取错误信息，带默认值
@@ -24,7 +25,7 @@ export default function PageError() {
           <Button
             type="primary"
             key="back"
-            onClick={() => navigate(-1)}
+            onClick={() => router.back()}
           >
             返回上一页
           </Button>

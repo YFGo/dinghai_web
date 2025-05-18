@@ -4,15 +4,17 @@ import { menuFilter } from '@/router/utils'
 import { useRouteToMenuFn } from '@/router/hooks'
 import { Menu } from 'antd'
 import { useMatches } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
+// import { useTranslation } from 'react-i18next'
 import { useRouter } from '@/router/hooks/use-router'
 
 const SidebarMenu = () => {
-  const { t } = useTranslation()
+  // const { t } = useTranslation()
   const matches = useMatches()
   const router = useRouter()
 
+  // 获取权限路由
   const permissionRoutes = usePermissionRoutes()
+  // 获取路由转换为菜单的函数
   const routeToMenuFn = useRouteToMenuFn()
 
   const menuList = useMemo(() => {
@@ -27,7 +29,7 @@ const SidebarMenu = () => {
     router.push(e.key)
   }
 
-  return <Menu theme="dark" onClick={onClick} mode="inline" selectedKeys={matches.map(match => match.pathname)} items={menuList} />
+  return <Menu onClick={onClick} mode="inline" selectedKeys={matches.map(match => match.pathname)} items={menuList} />
 }
 
 export default SidebarMenu

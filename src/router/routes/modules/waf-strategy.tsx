@@ -1,4 +1,5 @@
 import { Suspense, lazy } from 'react'
+import { CircleLoading } from '@/components/loading'
 import type { AppRouteObject } from '@/types/router'
 import { SafetyOutlined } from '@ant-design/icons'
 
@@ -9,7 +10,7 @@ const wafStrategy: AppRouteObject = {
   path: '/strategy', // 父路由路径
   // 使用Outlet作为子路由的渲染出口，同时添加Suspense加载状态处理,用于配置二级路由
   element: (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<CircleLoading />}>
       <WafStrategy />
     </Suspense>
   ),

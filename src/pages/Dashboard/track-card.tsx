@@ -20,13 +20,6 @@ function TrackCard() {
 
     const fetchData = async () => {
       try {
-
-        
-        // 转换数据格式，假设接口返回格式为：
-        // const formattedData = data.results.map((item: any) => ({
-        //   name: item.category,
-        //   value: item.count
-        // }))
         const formattedData = [
           { value: 1048, name: 'Search Engine' },
           { value: 735, name: 'Direct' },

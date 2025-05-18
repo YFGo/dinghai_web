@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react'
 import { Form, Button, Tabs, Card, message, Layout } from 'antd'
 import type { LoginParams } from '@/api/services/user'
 import type { TabsProps } from 'antd'
-import { useNavigate } from 'react-router-dom'
+import { useRouter } from '@/router/hooks/use-router'
+import { useLocation } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { setUserToken } from '@/redux/modules/userSlice'
 import { handleUserLogin } from '@/api/services/user'
-import { getToken, setToken } from '@/utils/storage.ts'
+import { getToken } from '@/utils/storage.ts'
+
 
 import AccountLogin from './account-login'
 import EmailLogin from './email-login'
@@ -14,7 +16,8 @@ import EmailLogin from './email-login'
 const { Content } = Layout
 
 const Login = () => {
-  const navigate = useNavigate()
+  const router = useRouter()
+  const location = useLocation()
 
   const [loading, setLoading] = useState(false)
   const [activeTab, setActiveTab] = useState('1')
@@ -39,12 +42,7 @@ const Login = () => {
 
       const redirectPath = '/dashboard'
 
-      navigate(redirectPath, {
-        replace: true,
-        state: {
-          firstLogin: true
-        }
-      })
+      router.replace(redirectPath)
     } catch (error) {
       message.error(error instanceof Error ? error.message : '登录失败')
     } finally {
@@ -68,9 +66,9 @@ const Login = () => {
 
   useEffect(() => {
     if (getToken('accessToken')) {
-      navigate(location.state?.from || '/dashboard', { replace: true })
+      router.replace(location.state?.from || '/dashboard')
     }
-  }, [navigate, location])
+  }, [router, location])
 
   return (
     <Layout className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-50">
@@ -82,7 +80,7 @@ const Login = () => {
             <Button type="link" className="text-gray-600 hover:text-primary hover:underline">
               忘记密码
             </Button>
-            <Button type="link" className="text-gray-600 hover:text-primary hover:underline"onClick={() => navigate('/register')} >
+            <Button type="link" className="text-gray-600 hover:text-primary hover:underline"onClick={() => router.push('/register')} >
               立即注册
             </Button>
           </div>

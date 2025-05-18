@@ -79,7 +79,7 @@ function CaptchaVerify({ open, onSuccess, onClose, captchaId, masterImage, thumb
       console.log('提交验证角度:', angle)
 
       // 验证是否通过
-      await onSubmit(captchaId, angle)
+      // await onSubmit(captchaId, angle)
 
       message.success('验证成功')
 

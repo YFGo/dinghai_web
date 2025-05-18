@@ -1,4 +1,5 @@
 import { Suspense, lazy } from 'react'
+import { CircleLoading } from '@/components/loading'
 import { Navigate,Outlet } from 'react-router-dom'
 import type { AppRouteObject } from '@/types/router'
 import { SafetyOutlined } from '@ant-design/icons'
@@ -11,7 +12,7 @@ const wafSite: AppRouteObject = {
   order: 3,
   path: '/site',
   element: (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<CircleLoading />}>
       <Outlet />
     </Suspense>
   ),

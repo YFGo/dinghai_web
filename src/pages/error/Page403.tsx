@@ -1,8 +1,8 @@
 import { Button, Result } from 'antd';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from '@/router/hooks/use-router'
 
 export default function Page403() {
-  const navigate = useNavigate();
+  const router = useRouter()
 
   return (
     <div className="flex items-center justify-center min-h-screen">
@@ -14,7 +14,7 @@ export default function Page403() {
           <Button
             type="primary"
             key="back"
-            onClick={() => navigate('/dashboard')}
+            onClick={() => router.push('/dashboard')}
           >
             返回首页
           </Button>,

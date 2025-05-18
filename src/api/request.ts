@@ -30,7 +30,7 @@ request.interceptors.response.use(
     const data= response.data
     // Relfect.has() 方法判断对象是否包含指定的属性
     const isSuccess = data && Reflect.has(data, 'code') && data.code === ResultEnum.SUCCESS        
-    if (isSuccess) {      
+    if (isSuccess) {
       return data
     } else {
       return Promise.reject(response.data)

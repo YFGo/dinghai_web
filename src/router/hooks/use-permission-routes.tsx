@@ -16,6 +16,7 @@ import wafRule from '../routes/modules/waf-rule'
 import wafSite from '../routes/modules/waf-site'
 import wafStrategy from '../routes/modules/waf-strategy'
 import wafWhiteList from '../routes/modules/waf-white-list'
+import wafAttack from '../routes/modules/waf-attack'
 
 
 // 页面组件入口路径以及动态加载配置
@@ -261,7 +262,7 @@ function flattenTrees(permissions: Permission[]): Permission[] {
  */
 function getRoutesFromModules(): AppRouteObject[] {
   // 返回所有模块路由配置数组
-  return [dashboard, wafRule, wafSite, wafStrategy, wafWhiteList]
+  return [dashboard, wafRule, wafSite, wafStrategy, wafWhiteList, wafAttack]
 }
 
 const ROUTE_MODE = import.meta.env.VITE_ROUTE_MODE; // 权限路由模式 permission | module

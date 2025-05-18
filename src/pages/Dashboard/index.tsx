@@ -13,13 +13,12 @@ export default function Dashboard() {
 
   // 模拟数据加载
   useEffect(() => {
-    setLoading(true)
     const timer = setTimeout(() => setLoading(false), 800)
     return () => clearTimeout(timer)
   }, [])
 
   return (
-    <div className="p-4 bg-gray-50 min-h-screen">
+    <div className="min-h-screen">
       <Spin spinning={loading}>
         <div className="space-y-4">
           {/* 顶部布局：TopCard 与 DetailCard 同级 */}

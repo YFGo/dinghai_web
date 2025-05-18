@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useRouter } from '@/router/hooks/use-router'
 import UserRegister from './user-register'
 import { RegisterParams } from '@/api/services/user'
 import { registerUser } from '@/api/services/user'
@@ -8,7 +8,7 @@ import { Card, Form, message, Layout } from 'antd'
 const { Content } = Layout
 
 function Register() {
-  const navigate = useNavigate()
+  const router = useRouter()
 
   const [loading, setLoading] = useState(false)
   const [form] = Form.useForm()
@@ -18,7 +18,7 @@ function Register() {
       setLoading(true)
       await registerUser(values)
       message.success('注册成功')
-      navigate('/login')
+      router.push('/login')
     } catch (error) {
       message.error(error instanceof Error ? error.message : '注册失败')
     } finally {
@@ -34,7 +34,7 @@ function Register() {
             {/* 返回登录 */}
             <div className="mt-4 text-center">
               <span className="text-gray-500">已有账号？</span>
-              <a onClick={() => navigate('/login')} className="text-blue-500 hover:underline">
+              <a onClick={() => router.push('/login')} className="text-blue-500 hover:underline">
                 立即登录
               </a>
             </div>
