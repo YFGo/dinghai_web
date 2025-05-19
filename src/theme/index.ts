@@ -19,6 +19,9 @@ export const lightTheme: ThemeConfig = {
       itemBg: 'transparent', // 菜单项背景
       itemColor: 'rgba(0, 0, 0, 0.65)',
       itemHoverColor: '#0fc6c2'
+    },
+    Progress: {
+      defaultColor: '#0fc6c2' // 进度条颜色
     }
   }
 }
@@ -42,6 +45,9 @@ export const darkTheme: ThemeConfig = {
       itemBg: '#1a1a1a', // 菜单项背景
       itemColor: 'rgba(255, 255, 255, 0.65)',
       itemHoverColor: '#d4af37'
+    },
+    Progress: {
+      defaultColor: '#d4af37' // 进度条颜色
     }
   },
   algorithm: theme.darkAlgorithm // 启用暗黑算法

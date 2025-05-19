@@ -5,7 +5,7 @@ import { clearToken } from '@/utils/storage.ts'
 import { useRouter } from '@/router/hooks/use-router'
 import { Layout, theme, Avatar, Dropdown, message, Space, Typography, Button } from 'antd'
 import type { MenuProps } from 'antd'
-import ThemeToggleButton from '@/components/ThemeToggleButton'
+import ThemeToggleButton from '@/components/theme-toggle-button'
 import SidebarMenu from './side-bar-menu'
 
 

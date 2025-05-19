@@ -1,11 +1,12 @@
 
-import { Card, Input, Flex, Button, Breadcrumb, DatePicker, Form, Select } from 'antd'
+import { useState, useEffect } from 'react'
+import { Card, Input, Flex, Button, Breadcrumb, DatePicker, message } from 'antd'
 import type { TimeRangePickerProps } from 'antd'
 import { CustomTable } from './custom-table'
+import {DataType} from './custom-table'
 import dayjs from 'dayjs'
 import type { Dayjs } from 'dayjs'
 import { useSafeModal } from '@/hooks/safe-modal'
-import { GroupSelect } from './group-select'
 
 const { RangePicker } = DatePicker
 
@@ -22,78 +23,46 @@ interface RuleFormValues {
 }
 
 export default function CustomRule() {
+  const [data, setData] = useState<DataType[]>([])
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
+  const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    setLoading(true)
+    setTimeout(() => {
+      setData([
+        { key: '1', name: 'John Brown', age: 32, address: 'New York No. 1 Lake Park', tags: ['nice', 'developer'] },
+        { key: '2', name: 'Jim Green', age: 42, address: 'London No. 1 Lake Park', tags: ['loser'] },
+        { key: '3', name: 'Joe Black', age: 32, address: 'Sydney No. 1 Lake Park', tags: ['cool', 'teacher'] }
+      ])
+      setLoading(false)
+    },1000)
+  },[])
+
+  // 删除选中项
+  const handleDelete = (keys: React.Key[]) => {
+    // 这里可以调用API执行删除
+    message.success(`删除了 ${keys.join(', ')}`)
+    setData(data.filter(item => !keys.includes(item.key)))
+    setSelectedRowKeys([])
+  }
+
+  // 自定义弹窗
   const { showModal, renderModal } = useSafeModal({
-    defaultTitle: '新增自定义规则',
-    width: 600,
+    defaultTitle: '删除自定义规则',
+    width: 600
   })
 
-  // 表单提交处理函数
-const handleSubmit = (values: RuleFormValues, close: () => void) => {
-  console.log('提交数据:', values);
-  // 这里调用你的API接口
-  close();
-};
-
-  // 普通弹窗示例
+  // 显示弹窗
   const showConfirm = () => {
     showModal({
-      content: (
-        <Form layout="vertical" initialValues={{ risk_level: 1 }} onFinish={values => handleSubmit(values, close)}>
-          {/* 基础信息 */}
-          <Form.Item label="规则名称" name="name" rules={[{ required: true, message: '请输入规则名称' }]}>
-            <Input placeholder="请输入规则名称" />
-          </Form.Item>
-
-          <Form.Item label="规则描述" name="description" rules={[{ required: true, message: '请输入规则描述' }]}>
-            <Input.TextArea rows={2} />
-          </Form.Item>
-
-          {/* 风险等级 */}
-          <Form.Item label="风险等级" name="risk_level" rules={[{ required: true }]}>
-            <Select>
-              <Select.Option value={1}>低风险</Select.Option>
-              <Select.Option value={2}>中风险</Select.Option>
-              <Select.Option value={3}>高风险</Select.Option>
-            </Select>
-          </Form.Item>
-
-          {/* 安全组 */}
-          <Form.Item label="所属组" name="group_id" rules={[{ required: true, message: '请选择所属组' }]}>
-            {/* 假设这是一个自定义组件 */}
-            <GroupSelect />
-          </Form.Item>
-
-          {/* 匹配模块 */}
-          <Card title="匹配配置" size="small" className="mb-4">
-            <Form.Item label="匹配目标" name={['seclang_mod', 'match_goal']} rules={[{ required: true }]}>
-              <Input />
-            </Form.Item>
-
-            <Form.Item label="匹配动作" name={['seclang_mod', 'match_action']} rules={[{ required: true }]}>
-              <Select>
-                <Select.Option value="block">拦截</Select.Option>
-                <Select.Option value="alert">告警</Select.Option>
-              </Select>
-            </Form.Item>
-
-            <Form.Item label="匹配内容" name={['seclang_mod', 'match_content']} rules={[{ required: true }]}>
-              <Input.TextArea rows={2} />
-            </Form.Item>
-          </Card>
-
-          {/* 隐藏的提交按钮用于回车提交 */}
-          <Form.Item hidden>
-            <Button htmlType="submit" />
-          </Form.Item>
-        </Form>
-      ),
+      content: <div>确认删除吗？一旦删除无法恢复</div>,
       onOk: close => {
         console.log('执行新增操作')
         close()
       }
     })
   }
-
 
   // 预设时间范围
   const rangePresets: TimeRangePickerProps['presets'] = [
@@ -133,17 +102,17 @@ const handleSubmit = (values: RuleFormValues, close: () => void) => {
       </Card>
       <Card>
         <div>
-          <Button color="primary" variant="outlined" onClick={showConfirm}>
+          <Button color="primary" variant="outlined">
             新增自定义规则
           </Button>
           <Button color="primary" variant="outlined" className="mx-3 mb-3">
-            批量导出
+            一键导出
           </Button>
-          <Button color="primary" variant="outlined">
+          <Button color="primary" variant="outlined" onClick={showConfirm} disabled={selectedRowKeys.length === 0}>
             批量删除
           </Button>
         </div>
-        <CustomTable />
+        <CustomTable data={data} selectedRowKeys={selectedRowKeys} onSelectedRowKeysChange={setSelectedRowKeys} onDelete={handleDelete} loading={loading} />{' '}
       </Card>
       {renderModal()}
     </div>

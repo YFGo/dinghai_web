@@ -1,11 +1,9 @@
-
-import { useState } from 'react'
-
-import {  Space, Table, Tag, Button, message, Popconfirm } from 'antd'
+import { Space, Table, Tag, Button, message, Popconfirm } from 'antd'
 import type { TableProps, PopconfirmProps } from 'antd'
+
 type TableRowSelection<T extends object = object> = TableProps<T>['rowSelection']
 
-interface DataType {
+export interface DataType {
   key: string
   name: string
   age: number
@@ -13,29 +11,29 @@ interface DataType {
   tags: string[]
 }
 
+interface CustomTableProps {
+  data: DataType[]
+  selectedRowKeys: React.Key[]
+  onSelectedRowKeysChange: (selectedRowKeys: React.Key[]) => void
+  onDelete?: (selectedRowKeys: React.Key[]) => void
+  loading?: boolean
+}
 
-export function CustomTable() {
-
-  const confirm: PopconfirmProps['onConfirm'] = e => {
-    console.log(e)
-    message.success('Click on Yes')
+export function CustomTable({ data, selectedRowKeys, onSelectedRowKeysChange, onDelete, loading = false }: CustomTableProps) {
+  const confirmDelete = () => {
+    if (onDelete) {
+      onDelete(selectedRowKeys)
+    }
   }
 
-  const cancel: PopconfirmProps['onCancel'] = e => {
+  const cancelDelete: PopconfirmProps['onCancel'] = e => {
     console.log(e)
-    message.error('Click on No')
-  }
-
-  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
-
-  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    console.log('selectedRowKeys changed: ', newSelectedRowKeys)
-    setSelectedRowKeys(newSelectedRowKeys)
+    message.error('取消删除')
   }
 
   const rowSelection: TableRowSelection<DataType> = {
     selectedRowKeys,
-    onChange: onSelectChange,
+    onChange: onSelectedRowKeysChange,
     selections: [
       Table.SELECTION_ALL,
       Table.SELECTION_INVERT,
@@ -44,28 +42,16 @@ export function CustomTable() {
         key: 'odd',
         text: '选择奇数行',
         onSelect: changeableRowKeys => {
-          let newSelectedRowKeys = []
-          newSelectedRowKeys = changeableRowKeys.filter((_, index) => {
-            if (index % 2 !== 0) {
-              return false
-            }
-            return true
-          })
-          setSelectedRowKeys(newSelectedRowKeys)
+          const newSelectedRowKeys = changeableRowKeys.filter((_, index) => index % 2 === 0)
+          onSelectedRowKeysChange(newSelectedRowKeys)
         }
       },
       {
         key: 'even',
         text: '选择偶数行',
         onSelect: changeableRowKeys => {
-          let newSelectedRowKeys = []
-          newSelectedRowKeys = changeableRowKeys.filter((_, index) => {
-            if (index % 2 !== 0) {
-              return true
-            }
-            return false
-          })
-          setSelectedRowKeys(newSelectedRowKeys)
+          const newSelectedRowKeys = changeableRowKeys.filter((_, index) => index % 2 !== 0)
+          onSelectedRowKeysChange(newSelectedRowKeys)
         }
       }
     ]
@@ -111,42 +97,18 @@ export function CustomTable() {
     {
       title: 'Action',
       key: 'action',
-      render: () => (
+      render: (_, record) => (
         <Space size="middle">
           <Button>编辑</Button>
-          <Popconfirm title="Delete the task" description="Are you sure to delete this task?" onConfirm={confirm} onCancel={cancel} okText="Yes" cancelText="No">
-            <Button danger>删除</Button>
+          <Popconfirm title="确定要删除吗？" description={`确定要删除 ${record.name} 吗？`} onConfirm={confirmDelete} onCancel={cancelDelete} okText="确定" cancelText="取消" disabled={!selectedRowKeys.includes(record.key)}>
+            <Button danger>
+              删除
+            </Button>
           </Popconfirm>
         </Space>
       )
     }
   ]
 
-  const data: DataType[] = [
-    {
-      key: '1',
-      name: 'John Brown',
-      age: 32,
-      address: 'New York No. 1 Lake Park',
-      tags: ['nice', 'developer']
-    },
-    {
-      key: '2',
-      name: 'Jim Green',
-      age: 42,
-      address: 'London No. 1 Lake Park',
-      tags: ['loser']
-    },
-    {
-      key: '3',
-      name: 'Joe Black',
-      age: 32,
-      address: 'Sydney No. 1 Lake Park',
-      tags: ['cool', 'teacher']
-    }
-  ]
-  return (
-    <Table<DataType> rowSelection={rowSelection} columns={columns} dataSource={data} />
-  )
+  return <Table<DataType> rowSelection={rowSelection} columns={columns} dataSource={data} loading={loading} rowKey="key" />
 }
-

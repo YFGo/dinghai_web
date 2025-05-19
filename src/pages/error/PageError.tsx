@@ -23,7 +23,7 @@ export default function PageError() {
         subTitle={errorMessage}
         extra={[
           <Button
-            type="primary"
+            color="primary"
             key="back"
             onClick={() => router.back()}
           >

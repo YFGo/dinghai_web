@@ -6,7 +6,7 @@ const ThemeToggleButton = () => {
   const { isDark, toggleTheme } = useTheme()
 
   return (
-    <Button onClick={toggleTheme} icon={isDark ? <MoonFilled /> : <SunFilled />}>
+    <Button color="primary" onClick={toggleTheme} icon={isDark ? <MoonFilled /> : <SunFilled />}>
       {isDark ? '深色模式' : '浅色模式'}
     </Button>
   )

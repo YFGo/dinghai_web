@@ -34,6 +34,7 @@ interface ModalParams<T = any> {
 }
 
 export function useSafeModal(options: UseSafeModalOptions = {}) {
+  // 默认配置
   const { defaultTitle = '提示', width = 600, maskClosable = false, keyboard = false } = options
   const [modalState, setModalState] = useState<{
     visible: boolean
@@ -102,7 +103,16 @@ export function useSafeModal(options: UseSafeModalOptions = {}) {
       )
 
     return (
-      <Modal {...modalProps} width={modalProps.width || width} title={title} open={visible} footer={renderFooter} onCancel={handleCancel} maskClosable={modalProps.maskClosable ?? maskClosable} keyboard={modalProps.keyboard ?? keyboard}>
+      <Modal
+        {...modalProps}
+        centered={true} // 关键属性：同时水平+垂直居中
+        width={modalProps.width || width}
+        title={title}
+        open={visible}
+        footer={renderFooter}
+        onCancel={handleCancel}
+        maskClosable={modalProps.maskClosable ?? maskClosable}
+        keyboard={modalProps.keyboard ?? keyboard}>
         {renderContent}
       </Modal>
     )
