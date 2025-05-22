@@ -37,7 +37,8 @@ const EarthCard3D = () => {
     },
     spriteStyle: {
       color: earthTheme.spriteColor,
-      size: 2.5
+      size: 2.5,
+      show: true,
     },
     hoverRegionStyle: {
       areaColor: earthTheme.highlightColor,

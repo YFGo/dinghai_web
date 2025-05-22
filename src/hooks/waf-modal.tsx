@@ -3,7 +3,7 @@ import { Modal, ModalProps, Button, ButtonProps } from 'antd'
 import type { ReactNode } from 'react'
 
 
-interface UseSafeModalOptions {
+interface UseWafModalOptions {
   /** 默认标题 */
   defaultTitle?: ReactNode
   /** 默认宽度 */
@@ -33,7 +33,7 @@ interface ModalParams<T = any> {
   cancelButtonProps?: ButtonProps
 }
 
-export function useSafeModal(options: UseSafeModalOptions = {}) {
+export function useWafModal(options: UseWafModalOptions = {}) {
   // 默认配置
   const { defaultTitle = '提示', width = 600, maskClosable = false, keyboard = false } = options
   const [modalState, setModalState] = useState<{

@@ -58,7 +58,7 @@ function CaptchaVerify({ open, onSuccess, onClose, captchaId, masterImage, thumb
 
   // 验证码配置
   const [rotateConfig] = useState<RotateConfig>({
-    width: 450,
+    width: 300,
     height: 220,
     scope: true
   })
@@ -106,22 +106,25 @@ function CaptchaVerify({ open, onSuccess, onClose, captchaId, masterImage, thumb
 
   return (
     <div className={`fixed inset-0 z-[999] bg-black/50 ${open ? 'block' : 'hidden'}`} onClick={onClose}>
-      <div className="fixed left-1/2 top-1/2 z-[1000] flex h-auto  -translate-x-1/2 -translate-y-1/2 flex-col items-center overflow-auto rounded-lg  shadow-lg" onClick={e => e.stopPropagation()}>
-        <GoCaptcha.Rotate
-          data={rotateData}
-          events={{
-            rotate: (angle: number) => {
-              // console.log('当前旋转角度:', angle)
-            },
-            refresh: handleRefresh,
-            close: onClose,
-            confirm: handleConfirm
-          }}
-          config={{
-            ...rotateConfig
-          }}
-          ref={rotateRef}
-        />
+      {/* onClick={e => e.stopPropagation()} */}
+      <div className="fixed left-1/2 top-1/2 z-[1000] flex h-auto  -translate-x-1/2 -translate-y-1/2 flex-col items-center overflow-auto rounded-lg  shadow-lg">
+        <div>
+          <GoCaptcha.Rotate
+            data={rotateData}
+            events={{
+              rotate: (angle: number) => {
+                // console.log('当前旋转角度:', angle)
+              },
+              refresh: handleRefresh,
+              close: onClose,
+              confirm: handleConfirm
+            }}
+            config={{
+              ...rotateConfig
+            }}
+            ref={rotateRef}
+          />
+        </div>
       </div>
     </div>
   )

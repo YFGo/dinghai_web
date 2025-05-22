@@ -1,11 +1,10 @@
-import { useState } from 'react'
-// import { getBuiltInRules } from '@/api/index'
+import { useEffect, useState } from 'react'
 // import { Tabs } from 'antd'
 // import type { TabsProps } from 'antd'
 // import { CircleLoading } from '@/components/loading'
 import { Card, Space, Table, Tag, Input, Flex, Button, message,Popconfirm } from 'antd'
 import type { TableProps, PopconfirmProps } from 'antd'
-type TableRowSelection<T extends object = object> = TableProps<T>['rowSelection']
+import { getBuiltInRules } from '@/api/index'
 
 
 interface DataType {
@@ -17,7 +16,6 @@ interface DataType {
 }
 
 export default function BuiltInRule() {
-  
   const columns: TableProps<DataType>['columns'] = [
     {
       title: 'Name',
@@ -80,6 +78,19 @@ export default function BuiltInRule() {
       tags: ['cool', 'teacher']
     }
   ]
+
+  const BuiltInRules = async () => {
+    try {
+      const res = await getBuiltInRules()
+      console.log(res)
+    } catch (error) {
+      message.error(error instanceof Error ? error.message : '获取内置规则失败')
+    }
+  }
+
+  useEffect(() => {
+    BuiltInRules()
+  }, [])
 
   return (
     <div>

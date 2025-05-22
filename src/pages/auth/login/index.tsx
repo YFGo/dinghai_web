@@ -22,7 +22,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false)
   const [activeTab, setActiveTab] = useState('1')
   const [form] = Form.useForm()
-      const dispatch = useDispatch()
+  const dispatch = useDispatch()
 
   // 统一处理登录逻辑
   const handleLogin = async (values: LoginParams) => {

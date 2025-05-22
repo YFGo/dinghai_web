@@ -37,7 +37,9 @@ const EarthCard2D = () => {
     },
     spriteStyle: {
       color: earthTheme.spriteColor,
-      size: 2.5
+      size: 2.5,
+      show: true,//是否展示光圈
+
     },
     hoverRegionStyle: {
       areaColor: earthTheme.highlightColor,
@@ -66,7 +68,7 @@ const EarthCard2D = () => {
       color: earthTheme.highlightColor,
       opacity: 0.5
     },
-    enableZoom: false,
+    enableZoom: true,
     regions: {
       China: {}
     }
