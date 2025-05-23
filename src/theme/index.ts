@@ -32,9 +32,9 @@ export const darkTheme: ThemeConfig = {
     colorBgLayout: '#0a0a0a', // 整体背景
     colorPrimary: '#d4af37', // 金色主色
     colorBgContainer: '#141414', // 内容区背景
-    colorText: 'rgba(255, 255, 255, 0.85)',
-    colorTextSecondary: 'rgba(255, 255, 255, 0.65)',
-    colorBorder: '#303030'
+    colorText: 'rgba(255, 255, 255, 0.85)', // 主要文字
+    colorTextSecondary: 'rgba(255, 255, 255, 0.65)', // 次要文字
+    colorBorder: '#303030' // 边框色
   },
   components: {
     Layout: {
@@ -43,7 +43,7 @@ export const darkTheme: ThemeConfig = {
     },
     Menu: {
       itemBg: '#1a1a1a', // 菜单项背景
-      itemColor: 'rgba(255, 255, 255, 0.65)',
+      itemColor: 'rgba(255, 255, 255, 0.65)', // 菜单项文字颜色
       itemHoverColor: '#d4af37'
     },
     Progress: {

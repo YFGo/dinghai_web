@@ -201,7 +201,9 @@ const DetailCard = () => {
     window.addEventListener('resize', resizeHandler)
     
     return () => {
+      // 组件卸载时销毁图表
       chart.dispose()
+      // 移除事件监听器
       window.removeEventListener('resize', resizeHandler)
     }
   }, [trendData])
@@ -209,22 +211,21 @@ const DetailCard = () => {
   // 渲染站点异常分布
   const renderSiteAbnormals = () => {
     return (
-      // <List
-      //   size="small"
-      //   dataSource={siteAbnormals}
-      //   renderItem={item => (
-      //     <List.Item>
-      //       <div className="flex justify-between w-full">
-      //         <span className="text-sm">{item.site}</span>
-      //         <div>
-      //           <span className="text-sm mr-2">{item.count}次</span>
-      //           <Tag color="blue">{item.percentage}%</Tag>
-      //         </div>
-      //       </div>
-      //     </List.Item>
-      //   )}
-      // />
-      <div></div>
+      <List
+        size="small"
+        dataSource={siteAbnormals}
+        // renderItem={item => (
+        //   <List.Item>
+        //     <div className="flex justify-between w-full">
+        //       <span className="text-sm">{item.site}</span>
+        //       <div>
+        //         <span className="text-sm mr-2">{item.count}次</span>
+        //         <Tag color="blue">{item.percentage}%</Tag>
+        //       </div>
+        //     </div>
+        //   </List.Item>
+        // )}
+      />
     )
   }
   

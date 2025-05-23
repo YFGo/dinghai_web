@@ -47,7 +47,7 @@ export const getAbnormalRequests = () => {
 
 // 根据日期获取异常请求数据变化(start_time,end_time)
 export const getAbnormalRequestsByRange = (params: DailyStats) => {
-  return request.get('/attack/dataView', { params })
+  return request.get('/attack/dataViews', { params })
 }
 
 // 获取站点异常请求信息

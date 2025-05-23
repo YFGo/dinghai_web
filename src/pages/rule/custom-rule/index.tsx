@@ -1,68 +1,44 @@
-
 import { useState, useEffect } from 'react'
 import { useWatch } from 'rc-field-form'
-import { Card, Input, Flex, Button, Form, Row, Col, Select,Breadcrumb, DatePicker, message } from 'antd'
+import { Card, Input, Flex, Button, Form, Row, Col, Select, Breadcrumb, DatePicker, message } from 'antd'
 import type { TimeRangePickerProps } from 'antd'
 import { CustomTable } from './custom-table'
-import {DataType} from './custom-table'
 import dayjs from 'dayjs'
 import type { Dayjs } from 'dayjs'
 import { useWafModal } from '@/hooks/waf-modal'
 import { useWafDrawer } from '@/hooks/waf-drawer'
-import { addCustomRule, updateCustomRule, deleteCustomRule } from '@/api/services/rule'
+import { getCustomRules,addCustomRule, updateCustomRule, deleteCustomRule } from '@/api/services/rule'
 import { RuleFormValues } from '@/types/rules'
-
 
 const { RangePicker } = DatePicker
 const { Option } = Select
 
-
-
 export default function CustomRule() {
-  const [data, setData] = useState<DataType[]>([])
+  // 数据
+  const [data, setData] = useState<RuleFormValues[]>([])
+  // 选中项
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
+  // 加载状态
   const [loading, setLoading] = useState(false)
+  // 表单实例
   const [form] = Form.useForm<RuleFormValues>()
   // 监听表单值的变化
   const matchGoal = useWatch(['seclang_mod', 'match_goal'], form)
 
+  // 根据type判断是修改还是新增规则
+  const [type, setType] = useState<'add' | 'edit'>('add')
 
-  useEffect(() => {
-    setLoading(true)
-    setTimeout(() => {
-      setData([
-        { key: '1', name: 'John Brown', age: 32, address: 'New York No. 1 Lake Park', tags: ['nice', 'developer'] },
-        { key: '2', name: 'Jim Green', age: 42, address: 'London No. 1 Lake Park', tags: ['loser'] },
-        { key: '3', name: 'Joe Black', age: 32, address: 'Sydney No. 1 Lake Park', tags: ['cool', 'teacher'] }
-      ])
-      setLoading(false)
-    },1000)
-  },[])
+  // 预设时间范围
+  const rangePresets: TimeRangePickerProps['presets'] = [
+    { label: 'Last 7 Days', value: [dayjs().add(-7, 'd'), dayjs()] },
+    { label: 'Last 14 Days', value: [dayjs().add(-14, 'd'), dayjs()] },
+    { label: 'Last 30 Days', value: [dayjs().add(-30, 'd'), dayjs()] },
+    { label: 'Last 90 Days', value: [dayjs().add(-90, 'd'), dayjs()] }
+  ]
 
-  // 删除选中项
-  const handleDelete = (keys: React.Key[]) => {
-    // 这里可以调用API执行删除
-    message.success(`删除了 ${keys.join(', ')}`)
-    setData(data.filter(item => !keys.includes(item.key)))
-    setSelectedRowKeys([])
-  }
-
-// 新增规则组
-  const onFinish = async (values: RuleFormValues, closeDrawer?: () => void) => {
-    try {
-      setLoading(true)
-      console.log(values, 329783)
-      await addCustomRule(values)
-      message.success('提交成功')
-      // 重置表单
-      form.resetFields()
-      // 提交成功后关闭抽屉
-      closeDrawer && closeDrawer()
-    } catch (error) {
-      message.error('提交失败') 
-    } finally {
-      setLoading(false)
-    }
+  // 处理时间选择
+  const handleTimeChange = (dates: null | (Dayjs | null)[], dateStrings: [string, string]) => {
+    console.log('Selected Time: ', dates, dateStrings)
   }
 
   // 自定义抽屉
@@ -70,11 +46,84 @@ export default function CustomRule() {
     defaultTitle: '新增自定义规则',
     width: 600
   })
+
+  // 自定义弹窗
+  const { showModal, renderModal } = useWafModal({
+    defaultTitle: '删除自定义规则',
+    width: 600
+  })
+
+  // 打开添加规则组抽屉
+  const hadnleAdd = async () => {
+    setType('add')
+    // 重置表单
+    form.setFieldsValue({})
+    showWafDrawer()
+  }
+
+  // 打开修改规则组抽屉
+  const handleEdit = (record: RuleFormValues) => {
+    setType('edit')
+    form.setFieldsValue(record)
+    showWafDrawer()
+  }
+
+  // 获取规则组列表
+  const fetchCustomRule = async () => {
+    try {
+      setLoading(true)
+      const {data} = await getCustomRules()
+      setData(data)
+    } catch (error) {
+      message.error('获取规则组列表失败')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // 批量删除规则组
+  const handleBatchDelete = async (keys: React.Key[]) => {
+    await deleteCustomRule(keys)
+    message.success(`删除了 ${keys.join(', ')}`)
+    setData(data.filter(item => !keys.includes(item.id)))
+    setSelectedRowKeys([])
+  }
+
+  // 新增或修改规则组
+  const handleSubmit = async (values: RuleFormValues) => {
+    setLoading(true)
+    try {
+      if (type === 'add') {
+        await addCustomRule(values)
+        message.success('添加成功')
+      } else {
+        await updateCustomRule(values)
+        message.success('修改成功')
+      }
+    } catch (error) {
+      message.error('操作失败')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // 删除当前项
+  const handleDelete = async (keys: React.Key[]) => {
+    try {
+      setLoading(true)
+      await deleteCustomRule(keys)
+      message.success(`删除了 ${keys.join(', ')}`)
+    } catch (error) {
+      message.error('删除失败')
+    }
+    setLoading(false)
+  }
+
   // 显示抽屉
   const showWafDrawer = () => {
     showDrawer({
       content: (
-        <Form layout="vertical" form={form} onFinish={onFinish} >
+        <Form layout="vertical" form={form}>
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item name="name" label="名称" rules={[{ required: true, message: 'Please enter user name' }]}>
@@ -118,8 +167,8 @@ export default function CustomRule() {
                   ({ getFieldValue }) => ({
                     validator(_, value) {
                       const currentMatchGoal = getFieldValue(['seclang_mod', 'match_goal'])
-                      console.log(value,433333333)
-                      
+                      console.log(value, 433333333)
+
                       if (!value) {
                         return Promise.reject(new Error('请输入匹配内容'))
                       }
@@ -144,10 +193,9 @@ export default function CustomRule() {
             <Col span={12}>
               <Form.Item name="risk_level" label="风险等级" rules={[{ required: true, message: '请选择风险等级' }]} className="mb-0">
                 <Select placeholder="Please choose the type" className="w-full">
-                  <Option value="1">低</Option>
-                  <Option value="2">中</Option>
-                  <Option value="3">高</Option>
-                  <Option value="4">非常高</Option>
+                  <Option value={0}>低</Option>
+                  <Option value={1}>中</Option>
+                  <Option value={2}>高</Option>
                 </Select>
               </Form.Item>
             </Col>
@@ -171,43 +219,77 @@ export default function CustomRule() {
       ),
       onOk: close => {
         // 表单验证
-        form.validateFields().then(values => {
-          console.log('提交表单数据: ', values)
-          // 触发表单提交，并传入关闭抽屉的回调函数
-          onFinish(values, close)
+        form.validateFields().then(async values => {
+          await handleSubmit(values)
+          close()
         })
       }
     })
   }
 
-  // 自定义弹窗
-  const { showModal, renderModal } = useWafModal({
-    defaultTitle: '删除自定义规则',
-    width: 600
-  })
   // 显示弹窗
   const showWafModal = () => {
     showModal({
       content: <div>确认删除吗？一旦删除无法恢复</div>,
-      onOk: close => {
-        console.log('执行新增操作')
+      onOk: async close => {
+        try {
+          await handleBatchDelete(selectedRowKeys)
+        } catch {
+          message.error('删除失败')
+        }
         close()
       }
     })
   }
 
-  // 预设时间范围
-  const rangePresets: TimeRangePickerProps['presets'] = [
-    { label: 'Last 7 Days', value: [dayjs().add(-7, 'd'), dayjs()] },
-    { label: 'Last 14 Days', value: [dayjs().add(-14, 'd'), dayjs()] },
-    { label: 'Last 30 Days', value: [dayjs().add(-30, 'd'), dayjs()] },
-    { label: 'Last 90 Days', value: [dayjs().add(-90, 'd'), dayjs()] }
-  ]
+  // 获取自定义规则
+  useEffect( () => {
+    setLoading(true)
+    
+    // fetchCustomRule()
 
-  // 处理时间选择
-  const handleTimeChange = (dates: null | (Dayjs | null)[], dateStrings: [string, string]) => {
-    console.log('Selected Time: ', dates, dateStrings)
-  }
+    setTimeout(() => {
+      setData([
+        {
+          id: 1,
+          name: 'John Brown',
+          description: "1111",
+          risk_level: 0,
+          group_id: 1,
+          seclang_mod: {
+            match_goal: 'IP',
+            match_action: '等于',
+            match_content: 'cookie'
+          }
+        },
+        {
+          id: 2,
+          name: 'Jim Green',
+          description: "1111",
+          risk_level: 1,
+          group_id: 2,
+          seclang_mod: {
+            match_goal: 'IP',
+            match_action: '等于',
+            match_content: 'cookie'
+          }
+        },
+        {
+          id: 3,
+          name: 'Joe Black',
+          description: "1111",
+          risk_level: 2,
+          group_id: 3,
+          seclang_mod: {
+            match_goal: 'IP',
+            match_action: '等于',
+            match_content: 'cookie'
+          }
+        }
+      ])
+      setLoading(false)
+    }, 1000)
+  }, [])
 
   return (
     <div>
@@ -234,7 +316,7 @@ export default function CustomRule() {
       </Card>
       <Card>
         <div>
-          <Button color="primary" variant="outlined" onClick={showWafDrawer}>
+          <Button color="primary" variant="outlined" onClick={hadnleAdd}>
             新增自定义规则
           </Button>
           <Button color="primary" variant="outlined" className="mx-3 mb-3">
@@ -244,7 +326,7 @@ export default function CustomRule() {
             批量删除
           </Button>
         </div>
-        <CustomTable data={data} selectedRowKeys={selectedRowKeys} onSelectedRowKeysChange={setSelectedRowKeys} onDelete={handleDelete} loading={loading} />
+        <CustomTable data={data} selectedRowKeys={selectedRowKeys} onSelectedRowKeysChange={setSelectedRowKeys} onDelete={handleDelete} onEdit={handleEdit} loading={loading} />
       </Card>
       {renderModal()}
       {renderDrawer()}

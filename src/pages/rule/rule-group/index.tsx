@@ -1,14 +1,11 @@
 import { useState } from 'react'
 import { Breadcrumb, Card, Flex, Input, Button } from 'antd'
-import { useRouter } from '@/router/hooks/use-router'
 
 import type { ItemType } from 'antd/es/breadcrumb/Breadcrumb'
 import { RuleGroupDetail } from './rule-group-detail'
 import { RuleTable } from './rule-table'
 
 export default function RuleGroup() {
-
-  const router = useRouter()
 
   // 状态管理
   const [selectedRuleId, setSelectedRuleId] = useState<string | null>(null)

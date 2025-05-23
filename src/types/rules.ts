@@ -6,10 +6,11 @@ export interface BuiltInRule {
 }
 
 export interface RuleFormValues {
+  id: number
   name: string
   description: string
   risk_level: number
-  group_id: string
+  group_id: number
   seclang_mod: {
     match_goal: string
     match_action: string

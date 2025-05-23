@@ -1,37 +1,34 @@
-import { Space, Table, Tag, Button, message, Popconfirm } from 'antd'
+import { Space, Table, Button, message, Popconfirm } from 'antd'
 import type { TableProps, PopconfirmProps } from 'antd'
+import { RuleFormValues } from '@/types/rules'
 
 type TableRowSelection<T extends object = object> = TableProps<T>['rowSelection']
 
-export interface DataType {
-  key: string
-  name: string
-  age: number
-  address: string
-  tags: string[]
-}
 
 interface CustomTableProps {
-  data: DataType[]
+  data: RuleFormValues[]
   selectedRowKeys: React.Key[]
   onSelectedRowKeysChange: (selectedRowKeys: React.Key[]) => void
-  onDelete?: (selectedRowKeys: React.Key[]) => void
+  onDelete: (selectedRowKeys: React.Key[]) => void
+  onEdit: (record: RuleFormValues) => void
   loading?: boolean
 }
 
-export function CustomTable({ data, selectedRowKeys, onSelectedRowKeysChange, onDelete, loading = false }: CustomTableProps) {
-  const confirmDelete = () => {
-    if (onDelete) {
-      onDelete(selectedRowKeys)
-    }
+export function CustomTable({ data, selectedRowKeys, onSelectedRowKeysChange, onDelete,onEdit, loading = false }: CustomTableProps) {
+  
+  // 确认删除
+  const confirmDelete = (id:number) => {
+      onDelete([id])
   }
 
+  // 取消删除
   const cancelDelete: PopconfirmProps['onCancel'] = e => {
     console.log(e)
-    message.error('取消删除')
+    // message.error('取消删除')
   }
-
-  const rowSelection: TableRowSelection<DataType> = {
+  
+  // 行选择配置
+  const rowSelection: TableRowSelection<RuleFormValues> = {
     selectedRowKeys,
     onChange: onSelectedRowKeysChange,
     selections: [
@@ -57,58 +54,46 @@ export function CustomTable({ data, selectedRowKeys, onSelectedRowKeysChange, on
     ]
   }
 
-  const columns: TableProps<DataType>['columns'] = [
+  // 列定义配置
+  const columns: TableProps<RuleFormValues>['columns'] = [
     {
-      title: 'Name',
+      title: '名称',
       dataIndex: 'name',
       key: 'name',
       render: text => <a>{text}</a>
     },
     {
-      title: 'Age',
-      dataIndex: 'age',
-      key: 'age'
+      title: '所属规则组',
+      dataIndex: 'group_id',
+      key: 'group_id'
     },
     {
-      title: 'Address',
-      dataIndex: 'address',
-      key: 'address'
+      title: '规则匹配',
+      dataIndex: ['seclang_mod', 'match_goal'],
+      key: 'match_goal'
     },
     {
-      title: 'Tags',
-      key: 'tags',
-      dataIndex: 'tags',
-      render: (_, { tags }) => (
-        <>
-          {tags.map(tag => {
-            let color = tag.length > 5 ? 'geekblue' : 'green'
-            if (tag === 'loser') {
-              color = 'volcano'
-            }
-            return (
-              <Tag color={color} key={tag}>
-                {tag.toUpperCase()}
-              </Tag>
-            )
-          })}
-        </>
-      )
+      title: '风险等级',
+      dataIndex: 'risk_level',
+      key: 'risk_level',
+      render: (_, record) => {
+        const riskLevel = record.risk_level
+        return <span>{riskLevel === 1 ? '低' : riskLevel === 2 ? '中' : '高'}</span>
+      }
     },
     {
-      title: 'Action',
+      title: '操作',
       key: 'action',
       render: (_, record) => (
         <Space size="middle">
-          <Button>编辑</Button>
-          <Popconfirm title="确定要删除吗？" description={`确定要删除 ${record.name} 吗？`} onConfirm={confirmDelete} onCancel={cancelDelete} okText="确定" cancelText="取消" disabled={!selectedRowKeys.includes(record.key)}>
-            <Button danger>
-              删除
-            </Button>
+          <Button onClick={() => onEdit(record)}>编辑</Button>
+          <Popconfirm title="确定要删除吗？" description={`确定要删除 ${record.name} 吗？`} onConfirm={() => confirmDelete(record.id)} onCancel={cancelDelete} okText="确定" cancelText="取消">
+            <Button danger>删除</Button>
           </Popconfirm>
         </Space>
       )
     }
   ]
 
-  return <Table<DataType> rowSelection={rowSelection} columns={columns} dataSource={data} loading={loading} rowKey="key" />
+  return <Table<RuleFormValues> rowSelection={rowSelection} columns={columns} dataSource={data} loading={loading} rowKey="id" />
 }
