@@ -8,20 +8,20 @@ import type { Dayjs } from 'dayjs'
 import { useWafModal } from '@/hooks/waf-modal'
 import { useWafDrawer } from '@/hooks/waf-drawer'
 import { getCustomRules,addCustomRule, updateCustomRule, deleteCustomRule } from '@/api/services/rule'
-import { RuleFormValues } from '@/types/rules'
+import { RuleValues } from '@/api/services/rule'
 
 const { RangePicker } = DatePicker
 const { Option } = Select
 
 export default function CustomRule() {
   // 数据
-  const [data, setData] = useState<RuleFormValues[]>([])
+  const [data, setData] = useState<RuleValues[]>([])
   // 选中项
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
   // 加载状态
   const [loading, setLoading] = useState(false)
   // 表单实例
-  const [form] = Form.useForm<RuleFormValues>()
+  const [form] = Form.useForm<RuleValues>()
   // 监听表单值的变化
   const matchGoal = useWatch(['seclang_mod', 'match_goal'], form)
 
@@ -53,22 +53,22 @@ export default function CustomRule() {
     width: 600
   })
 
-  // 打开添加规则组抽屉
+  // 打开添加自定义规则抽屉
   const hadnleAdd = async () => {
-    setType('add')
+    setType('add')    
     // 重置表单
-    form.setFieldsValue({})
+    form.resetFields()
     showWafDrawer()
   }
 
-  // 打开修改规则组抽屉
-  const handleEdit = (record: RuleFormValues) => {
+  // 打开修改自定义规则抽屉
+  const handleEdit = (record: RuleValues) => {
     setType('edit')
     form.setFieldsValue(record)
     showWafDrawer()
   }
 
-  // 获取规则组列表
+  // 获取自定义规则列表
   const fetchCustomRule = async () => {
     try {
       setLoading(true)
@@ -81,7 +81,7 @@ export default function CustomRule() {
     }
   }
 
-  // 批量删除规则组
+  // 批量删除自定义规则
   const handleBatchDelete = async (keys: React.Key[]) => {
     await deleteCustomRule(keys)
     message.success(`删除了 ${keys.join(', ')}`)
@@ -89,8 +89,8 @@ export default function CustomRule() {
     setSelectedRowKeys([])
   }
 
-  // 新增或修改规则组
-  const handleSubmit = async (values: RuleFormValues) => {
+  // 新增或修改自定义规则
+  const handleSubmit = async (values: RuleValues) => {
     setLoading(true)
     try {
       if (type === 'add') {
@@ -122,6 +122,7 @@ export default function CustomRule() {
   // 显示抽屉
   const showWafDrawer = () => {
     showDrawer({
+      title: type === 'add'? '新增自定义规则' : '修改自定义规则',
       content: (
         <Form layout="vertical" form={form}>
           <Row gutter={16}>
@@ -246,49 +247,49 @@ export default function CustomRule() {
   useEffect( () => {
     setLoading(true)
     
-    // fetchCustomRule()
+    fetchCustomRule()
 
-    setTimeout(() => {
-      setData([
-        {
-          id: 1,
-          name: 'John Brown',
-          description: "1111",
-          risk_level: 0,
-          group_id: 1,
-          seclang_mod: {
-            match_goal: 'IP',
-            match_action: '等于',
-            match_content: 'cookie'
-          }
-        },
-        {
-          id: 2,
-          name: 'Jim Green',
-          description: "1111",
-          risk_level: 1,
-          group_id: 2,
-          seclang_mod: {
-            match_goal: 'IP',
-            match_action: '等于',
-            match_content: 'cookie'
-          }
-        },
-        {
-          id: 3,
-          name: 'Joe Black',
-          description: "1111",
-          risk_level: 2,
-          group_id: 3,
-          seclang_mod: {
-            match_goal: 'IP',
-            match_action: '等于',
-            match_content: 'cookie'
-          }
-        }
-      ])
-      setLoading(false)
-    }, 1000)
+    // setTimeout(() => {
+    //   setData([
+    //     {
+    //       id: 1,
+    //       name: 'John Brown',
+    //       description: "1111",
+    //       risk_level: 0,
+    //       group_id: 1,
+    //       seclang_mod: {
+    //         match_goal: 'IP',
+    //         match_action: '等于',
+    //         match_content: 'cookie'
+    //       }
+    //     },
+    //     {
+    //       id: 2,
+    //       name: 'Jim Green',
+    //       description: "1111",
+    //       risk_level: 1,
+    //       group_id: 2,
+    //       seclang_mod: {
+    //         match_goal: 'IP',
+    //         match_action: '等于',
+    //         match_content: 'cookie'
+    //       }
+    //     },
+    //     {
+    //       id: 3,
+    //       name: 'Joe Black',
+    //       description: "1111",
+    //       risk_level: 2,
+    //       group_id: 3,
+    //       seclang_mod: {
+    //         match_goal: 'IP',
+    //         match_action: '等于',
+    //         match_content: 'cookie'
+    //       }
+    //     }
+    //   ])
+    //   setLoading(false)
+    // }, 1000)
   }, [])
 
   return (

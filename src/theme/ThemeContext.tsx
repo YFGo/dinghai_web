@@ -133,17 +133,21 @@ const getInitialTheme = (): boolean => {
 export const ThemeProvider = ({ children, defaultDark = getInitialTheme() }: { children: React.ReactNode; defaultDark?: boolean }) => {
   const [isDark, setIsDark] = useState(defaultDark)
 
+  // 主题切换
   const toggleTheme = useCallback(() => {
     setIsDark(prev => {
-      const newTheme = !prev
-      localStorage.setItem('themePreference', newTheme ? 'dark' : 'light')
-      return newTheme
+      // 调用 setIsDark 更新 isDark 状态
+      const newTheme = !prev // 新的主题是当前主题的反值（如果当前是暗色模式，则切换为亮色模式，反之亦然）
+      localStorage.setItem('themePreference', newTheme ? 'dark' : 'light') // 将新主题存储到 localStorage 中，以便在页面刷新后仍能记住用户的主题偏好
+      return newTheme // 返回新主题值，更新 isDark 状态
     })
-  }, [])
+  }, []) // 依赖数组为空，表示这个回调函数在组件的整个生命周期中不会重新创建
 
   // 监听系统主题变化
   useEffect(() => {
+    // MediaQueryList表示CSS媒体查询的JavaScript对象。
     const handleSystemThemeChange = (e: MediaQueryListEvent) => {
+      // e.matches媒体查询匹配当前的环境
       setIsDark(e.matches)
     }
     // 初始化时检查系统主题

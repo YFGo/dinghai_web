@@ -16,7 +16,6 @@ const wafAttack: AppRouteObject = {
       <AttackSafe />
     </Suspense>
   ),
-
   meta: {
     label: '攻击防护',
     icon: <SafetyOutlined />,

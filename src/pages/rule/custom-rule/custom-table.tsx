@@ -1,16 +1,16 @@
-import { Space, Table, Button, message, Popconfirm } from 'antd'
+import { Space, Table, Button, Popconfirm } from 'antd'
 import type { TableProps, PopconfirmProps } from 'antd'
-import { RuleFormValues } from '@/types/rules'
+import { RuleValues } from '@/api/services/rule'
 
 type TableRowSelection<T extends object = object> = TableProps<T>['rowSelection']
 
 
 interface CustomTableProps {
-  data: RuleFormValues[]
+  data: RuleValues[]
   selectedRowKeys: React.Key[]
   onSelectedRowKeysChange: (selectedRowKeys: React.Key[]) => void
   onDelete: (selectedRowKeys: React.Key[]) => void
-  onEdit: (record: RuleFormValues) => void
+  onEdit: (record: RuleValues) => void
   loading?: boolean
 }
 
@@ -28,7 +28,7 @@ export function CustomTable({ data, selectedRowKeys, onSelectedRowKeysChange, on
   }
   
   // 行选择配置
-  const rowSelection: TableRowSelection<RuleFormValues> = {
+  const rowSelection: TableRowSelection<RuleValues> = {
     selectedRowKeys,
     onChange: onSelectedRowKeysChange,
     selections: [
@@ -55,7 +55,7 @@ export function CustomTable({ data, selectedRowKeys, onSelectedRowKeysChange, on
   }
 
   // 列定义配置
-  const columns: TableProps<RuleFormValues>['columns'] = [
+  const columns: TableProps<RuleValues>['columns'] = [
     {
       title: '名称',
       dataIndex: 'name',
@@ -95,5 +95,5 @@ export function CustomTable({ data, selectedRowKeys, onSelectedRowKeysChange, on
     }
   ]
 
-  return <Table<RuleFormValues> rowSelection={rowSelection} columns={columns} dataSource={data} loading={loading} rowKey="id" />
+  return <Table<RuleValues> rowSelection={rowSelection} columns={columns} dataSource={data} loading={loading} rowKey="id" />
 }

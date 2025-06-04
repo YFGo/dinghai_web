@@ -6,6 +6,7 @@ import Router from '@/router'
 import store from '@/redux'
 import './global.css'
 
+// ThemeContext 是上下文的定义，ThemeProvider 是上下文的实现。它们相辅相成，共同实现了在组件树中共享主题状态的功能。
 const App = () => {
   return (
     <Provider store={store}>

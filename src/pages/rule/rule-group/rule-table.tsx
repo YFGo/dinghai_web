@@ -1,42 +1,49 @@
 
 import { useState } from 'react'
 
-import {  Space, Table, Tag, Button, message, Popconfirm } from 'antd'
+import {  Space, Table, Button, message, Popconfirm } from 'antd'
 import type { TableProps, PopconfirmProps } from 'antd'
+import type { RuleGroupResponse,RuleGroupInfo } from '@/api/services/rule'
+
 type TableRowSelection<T extends object = object> = TableProps<T>['rowSelection']
 
-interface DataType {
-  key: string
-  name: string
-  age: number
-  address: string
-  tags: string[]
-}
-
 interface RuleTableProps {
-  onViewDetail: (record: DataType) => void
+  data: RuleGroupResponse[]
+  onEdit: (record: RuleGroupResponse) => void
+  onDelete: (info: RuleGroupInfo[]) => void
+  onViewDetail: (ruleId: number) => void
+  loading: boolean
 }
 
 
-export function RuleTable({ onViewDetail }: RuleTableProps) {
-  const confirm: PopconfirmProps['onConfirm'] = e => {
-    console.log(e)
-    message.success('Click on Yes')
-  }
-
-  const cancel: PopconfirmProps['onCancel'] = e => {
-    console.log(e)
-    message.error('Click on No')
-  }
-
+export function RuleTable({ onViewDetail, data, onEdit, onDelete, loading }: RuleTableProps) {
+  // 选中的行
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
+  
+  // 确认删除
+  const confirmDelete = (info: RuleGroupInfo) => {
+    onDelete([info])
+  }
 
+  // 取消删除
+  const cancelDelete: PopconfirmProps['onCancel'] = e => {
+    console.log(e)
+    // message.error('取消删除')
+  }
+
+  // 查看规则组详情
+  const onGroupDetail = (id: number) => {
+    onViewDetail(id)
+  }
+
+  // 选中行变化
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     console.log('selectedRowKeys changed: ', newSelectedRowKeys)
     setSelectedRowKeys(newSelectedRowKeys)
   }
 
-  const rowSelection: TableRowSelection<DataType> = {
+  // 行选择配置
+  const rowSelection: TableRowSelection<RuleGroupResponse> = {
     selectedRowKeys,
     onChange: onSelectChange,
     selections: [
@@ -74,52 +81,38 @@ export function RuleTable({ onViewDetail }: RuleTableProps) {
     ]
   }
 
-  const columns: TableProps<DataType>['columns'] = [
+  // 表格列配置
+  const columns: TableProps<RuleGroupResponse>['columns'] = [
     {
-      title: 'Name',
+      title: '规则组ID',
+      dataIndex: 'id',
+      key: 'id'
+    },
+    {
+      title: '规则组名称',
       dataIndex: 'name',
       key: 'name',
       render: text => <a>{text}</a>
     },
     {
-      title: 'Age',
+      title: '规则组描述',
       dataIndex: 'age',
       key: 'age'
     },
     {
-      title: 'Address',
-      dataIndex: 'address',
-      key: 'address'
-    },
-    {
-      title: 'Tags',
-      key: 'tags',
-      dataIndex: 'tags',
-      render: (_, { tags }) => (
-        <>
-          {tags.map(tag => {
-            let color = tag.length > 5 ? 'geekblue' : 'green'
-            if (tag === 'loser') {
-              color = 'volcano'
-            }
-            return (
-              <Tag color={color} key={tag}>
-                {tag.toUpperCase()}
-              </Tag>
-            )
-          })}
-        </>
-      )
+      title: '是否内置规则组',
+      dataIndex: 'is_buildin',
+      key: 'is_buildin'
     },
     {
       title: '操作',
       key: 'action',
-      render: (_: any, record: DataType) => (
+      render: (_: any, record: RuleGroupResponse) => (
         <Space size="middle">
-          <Button onClick={() => onViewDetail(record)}>
-            查看详情
-          </Button>
-          <Popconfirm title="Delete the task" description="Are you sure to delete this task?" onConfirm={confirm} onCancel={cancel} okText="Yes" cancelText="No">
+          <Button onClick={() => onGroupDetail(record.id)}>查看详情</Button>
+          <Button onClick={() => onEdit(record)}>编辑</Button>
+          <Popconfirm title="确定要删除吗？" description={`确定要删除 ${record.name} 吗？`} onConfirm={() => confirmDelete({ id: record.id, is_buildin: record.is_buildin })} onCancel={cancelDelete} okText="Yes" cancelText="No">
+            {' '}
             <Button danger>删除</Button>
           </Popconfirm>
         </Space>
@@ -127,29 +120,6 @@ export function RuleTable({ onViewDetail }: RuleTableProps) {
     }
   ]
 
-  const data: DataType[] = [
-    {
-      key: '1',
-      name: 'John Brown',
-      age: 32,
-      address: 'New York No. 1 Lake Park',
-      tags: ['nice', 'developer']
-    },
-    {
-      key: '2',
-      name: 'Jim Green',
-      age: 42,
-      address: 'London No. 1 Lake Park',
-      tags: ['loser']
-    },
-    {
-      key: '3',
-      name: 'Joe Black',
-      age: 32,
-      address: 'Sydney No. 1 Lake Park',
-      tags: ['cool', 'teacher']
-    }
-  ]
-  return <Table<DataType> rowSelection={rowSelection} columns={columns} dataSource={data} />
+  return <Table<RuleGroupResponse> rowSelection={rowSelection} columns={columns} dataSource={data} loading={loading} rowKey="id" />
 }
 

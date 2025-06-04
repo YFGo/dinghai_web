@@ -5,7 +5,7 @@ export interface BuiltInRule {
   description: string
 }
 
-export interface RuleFormValues {
+export interface RuleCustomValues {
   id: number
   name: string
   description: string
@@ -17,3 +17,5 @@ export interface RuleFormValues {
     match_content: string
   }
 }
+
+export interface RuleGroupVaules {}

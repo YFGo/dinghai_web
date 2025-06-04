@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 // import { Tabs } from 'antd'
 // import type { TabsProps } from 'antd'
 // import { CircleLoading } from '@/components/loading'
-import { Card, Space, Table, Tag, Input, Flex, Button, message,Popconfirm } from 'antd'
-import type { TableProps, PopconfirmProps } from 'antd'
+import { Card, Table, Tag, Input, Flex, Button, message } from 'antd'
+import type { TableProps } from 'antd'
 import { getBuiltInRules } from '@/api/index'
 
 
